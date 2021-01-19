@@ -64,7 +64,7 @@ variable "controller_password" {
   type        = string
   sensitive   = true
   validation {
-    condition     = length(var.controller_password)
+    condition     = length(var.controller_password) > 7
     error_message = "The controller_password value must be more than 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters."
   }
 }
