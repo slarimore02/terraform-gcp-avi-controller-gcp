@@ -82,7 +82,6 @@ module "avi_controller" {
 | service\_engine\_project | The project used for AVI Service Engines | `string` | `""` | no |
 | storage\_project | The storage project used for the AVI Controller Image | `string` | `""` | no |
 | vip\_allocation\_strategy | The VIP allocation strategy for the GCP Cloud - ROUTES or ILB | `string` | `"ROUTES"` | no |
-| vpc\_network\_name | The name of the VPC that will be created for AVI resources. This variable should not be defined if the create\_networking variable is true | `string` | `""` | no |
 
 ## Outputs
 

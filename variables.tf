@@ -93,11 +93,6 @@ variable "server_project" {
   type        = string
   default     = ""
 }
-variable "vpc_network_name" {
-  description = "The name of the VPC that will be created for AVI resources. This variable should not be defined if the create_networking variable is true "
-  type        = string
-  default     = ""
-}
 variable "avi_subnet" {
   description = "The CIDR that will be used for creating a subnet in the AVI VPC"
   type        = string

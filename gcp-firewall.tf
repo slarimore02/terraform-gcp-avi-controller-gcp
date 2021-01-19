@@ -1,5 +1,5 @@
 resource "google_compute_firewall" "avi_controller_mgmt" {
-  name    = "avi-controller-mgmt"
+  name    = "${var.name_prefix}-avi-controller-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
@@ -14,7 +14,7 @@ resource "google_compute_firewall" "avi_controller_mgmt" {
 }
 
 resource "google_compute_firewall" "avi_controller_to_controller" {
-  name    = "avi-controller-to-controller"
+  name    = "${var.name_prefix}-avi-controller-to-controller"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
@@ -29,7 +29,7 @@ resource "google_compute_firewall" "avi_controller_to_controller" {
 }
 
 resource "google_compute_firewall" "avi_se_to_se" {
-  name    = "avi-se-to-se"
+  name    = "${var.name_prefix}-avi-se-to-se"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
@@ -52,7 +52,7 @@ resource "google_compute_firewall" "avi_se_to_se" {
 }
 
 resource "google_compute_firewall" "avi_se_mgmt" {
-  name    = "avi-se-mgmt"
+  name    = "${var.name_prefix}-avi-se-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
