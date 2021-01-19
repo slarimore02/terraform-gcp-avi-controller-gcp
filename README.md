@@ -15,7 +15,7 @@ This module creates:
 * Firewall Rules for AVI Controller and SE communication
 * GCP Compute Instance using the Controller Compute Image
 
-During the creation of the Controller instance the following initilization steps are performed:
+During the creation of the Controller instance the following initialization steps are performed:
 * Change default password to user specified password
 * Copy Ansible playbook to controller using the assigned public IP
 * Run Ansible playbook to configure initial settings and GCP Full Access Cloud 
@@ -80,7 +80,7 @@ module "avi_controller" {
 | service\_engine\_project | The project used for AVI Service Engines | `string` | `""` | no |
 | storage\_project | The storage project used for the AVI Controller Image | `string` | `""` | no |
 | vip\_allocation\_strategy | The VIP allocation strategy for the GCP Cloud - ROUTES or ILB | `string` | `"ROUTES"` | no |
-| vpc\_network\_name | The name of the VPC that will be created for AVI resources | `string` | n/a | yes |
+| vpc\_network\_name | The name of the VPC that will be created for AVI resources. This variable should not be defined if the create\_networking variable is true | `string` | `""` | no |
 
 ## Outputs
 

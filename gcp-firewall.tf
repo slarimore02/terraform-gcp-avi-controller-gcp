@@ -1,7 +1,7 @@
 resource "google_compute_firewall" "avi_controller_mgmt" {
   name    = "avi-controller-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
-  network = var.vpc_network_name
+  network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
   allow {
     protocol = "tcp"
@@ -16,7 +16,7 @@ resource "google_compute_firewall" "avi_controller_mgmt" {
 resource "google_compute_firewall" "avi_controller_to_controller" {
   name    = "avi-controller-to-controller"
   project = var.network_project != "" ? var.network_project : var.project
-  network = var.vpc_network_name
+  network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
   allow {
     protocol = "tcp"
@@ -31,7 +31,7 @@ resource "google_compute_firewall" "avi_controller_to_controller" {
 resource "google_compute_firewall" "avi_se_to_se" {
   name    = "avi-se-to-se"
   project = var.network_project != "" ? var.network_project : var.project
-  network = var.vpc_network_name
+  network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
   allow {
     protocol = 75
@@ -54,7 +54,7 @@ resource "google_compute_firewall" "avi_se_to_se" {
 resource "google_compute_firewall" "avi_se_mgmt" {
   name    = "avi-se-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
-  network = var.vpc_network_name
+  network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
 
   allow {
     protocol = "udp"
