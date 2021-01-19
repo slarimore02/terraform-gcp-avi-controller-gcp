@@ -46,7 +46,7 @@ curl -v -k --location --request PUT "https://$CONTROLLER_ADDRESS/api/useraccount
 --header "referer: https://$CONTROLLER_ADDRESS/" \
 --header 'Content-Type: application/json' \
 --header "Cookie: csrftoken=$TOKEN; avi-sessionid=$SESSIONID; sessionid=$SESSIONID" \
---data-raw "{
+--data "{
 \"username\": \"admin\",
 \"password\": \"$NEW_PASSWORD\",
 \"old_password\": \"$CURRENT_PASSWORD\"

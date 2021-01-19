@@ -1,6 +1,8 @@
 # AVI Controller Deployment on GCP Terraform module
 This Terraform module creates and configures an AVI Controller on GCP. 
 
+## Google Provider Requirements
+For authenticating to GCP you must leverage either the "export GOOGLE_APPLICATION_CREDENTIALS={{path}}" or gcloud auth application-default login
 ## Controller Image Requirements 
 The AVI Controller image for GCP should be uploaded to a GCP Cloud Storage bucket before running this module with the path specified in the controller-image-gs-path variable. This can be done with the following gsutil commands:
 
