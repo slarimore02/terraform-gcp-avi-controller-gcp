@@ -24,7 +24,7 @@ variable "create_iam" {
 variable "controller_default_password" {
   description = "This is the default password for the AVI controller image"
   type        = string
-  sensitive   = true
+  sensitive   = false
 }
 variable "service_account_email" {
   description = "This is the service account email that will be leveraged by the AVI Controller. If the create-iam variable is true then this variable is not required"
@@ -62,7 +62,7 @@ variable "machine_type" {
 variable "controller_password" {
   description = "The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters"
   type        = string
-  sensitive   = true
+  sensitive   = false
   validation {
     condition     = length(var.controller_password) > 7
     error_message = "The controller_password value must be more than 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters."
