@@ -1,5 +1,5 @@
 terraform {
-  required_version = ">= 0.12.21"
+  required_version = ">= 0.13.6"
 
   required_providers {
     google = {
@@ -12,4 +12,3 @@ provider "google" {
   project = var.project
   region  = var.region
 }
-

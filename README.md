@@ -1,18 +1,10 @@
 # AVI Controller Deployment on GCP Terraform module
-This Terraform module creates and configures an AVI Controller on GCP. 
+This Terraform module creates and configures an AVI (NSX Advanced Load-Balancer) Controller on GCP
 
-## Google Provider Requirements
-For authenticating to GCP you must leverage either the "export GOOGLE_APPLICATION_CREDENTIALS={{path}}" or gcloud auth application-default login
-## Controller Image Requirements 
-The AVI Controller image for GCP should be uploaded to a GCP Cloud Storage bucket before running this module with the path specified in the controller-image-gs-path variable. This can be done with the following gsutil commands:
-
-```bash
-gsutil mb <bucket>
-gsutil -m cp ./gcp_controller-<avi-version>.tar.gz  gs://<bucket>/
-```
-# Module Functions
-This module creates:
-* VPC and Subnet for the Controller
+## Module Functions
+The module is meant to be modular and can create all or none of the prerequiste resources needed for the AVI GCP Deployment including:
+* VPC and Subnet for the Controller (optional with create_networking variable)
+* IAM Roles, Service Account, and Role Bindings (optional with create_iam variable)
 * GCP Compute Image from the bucket controller file
 * Firewall Rules for AVI Controller and SE communication
 * GCP Compute Instance using the Controller Compute Image
@@ -22,8 +14,19 @@ During the creation of the Controller instance the following initialization step
 * Copy Ansible playbook to controller using the assigned public IP
 * Run Ansible playbook to configure initial settings and GCP Full Access Cloud 
 
-## Terraform versions
-This module has been tested working with versions of Terraform greater than 0.13
+# Environment Requirements
+## Google Provider
+For authenticating to GCP you must leverage either the "GOOGLE_APPLICATION_CREDENTIALS={{path}}" environment variable or use "gcloud auth application-default login"
+## Controller Image
+The AVI Controller image for GCP should be uploaded to a GCP Cloud Storage bucket before running this module with the path specified in the controller-image-gs-path variable. This can be done with the following gsutil commands:
+
+```bash
+gsutil mb <bucket>
+gsutil -m cp ./gcp_controller-<avi-version>.tar.gz  gs://<bucket>/
+```
+## Host OS 
+The following packages must be installed on the host operating system:
+* curl 
 
 ## Usage
 ```hcl
@@ -48,7 +51,7 @@ module "avi_controller" {
 
 | Name | Version |
 |------|---------|
-| terraform | >= 0.12.21 |
+| terraform | >= 0.13.6 |
 | google | ~> 3.51.0 |
 
 ## Providers
@@ -66,7 +69,7 @@ module "avi_controller" {
 | controller\_default\_password | This is the default password for the AVI controller image | `string` | n/a | yes |
 | controller\_ha | If true a HA controller cluster is deployed | `bool` | `"false"` | no |
 | controller\_image\_gs\_path | The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax | `string` | n/a | yes |
-| controller\_password | The password that will be used authenticating with the AVI Controller | `string` | n/a | yes |
+| controller\_password | The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters | `string` | n/a | yes |
 | controller\_version | The AVI Controller version that will be deployed | `string` | n/a | yes |
 | create\_iam | Create IAM Service Account, Roles, and Role Bindings for Avi GCP Full Access Cloud | `bool` | `"false"` | no |
 | create\_networking | This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom-vpc-name and custom-subnetwork-name must be set. | `bool` | `"true"` | no |

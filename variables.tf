@@ -60,9 +60,13 @@ variable "machine_type" {
   default     = "n1-standard-8"
 }
 variable "controller_password" {
-  description = "The password that will be used authenticating with the AVI Controller "
+  description = "The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters"
   type        = string
   sensitive   = true
+  validation {
+    condition     = length(var.controller_password) > 7
+    error_message = "The controler_password value must be more than 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters."
+  }
 }
 variable "project" {
   description = "The project used for the AVI Controller"
