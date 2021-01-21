@@ -20,6 +20,7 @@
     se_mgmt_tag: ${se_mgmt_tag}
     se_data_tag: ${se_data_tag}
     vip_allocation_strategy: ${vip_allocation_strategy}
+    controller_ha: ${controller_ha}
 
   tasks:
     - name: Wait for Controller to become ready
@@ -115,7 +116,45 @@
         realtime_se_metrics:
           duration: "10080"
           enabled: true
-
+    
+    - name: Set Backup Passphrase
+      avi_backupconfiguration:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        api_version: "{{ controller_version }}"
+        name: Backup-Configuration
+        backup_passphrase: "{{ password }}"
+        upload_to_remote_host: false
+%{ if controller_ha }
+    - name: Controller Cluster Configuration
+      avi_cluster:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        api_version: "{{ api_version }}"
+        #virtual_ip:
+        #  type: V4
+        #  addr: "{{ controller_cluster_vip }}"
+        nodes:
+            - name: "{{ controller_name_1 }}" 
+              ip:
+                type: V4
+                addr: "{{ controller_ip_1 }}"
+            - name: "{{ controller_name_2 }}"
+              ip:
+                type: V4
+                addr: "{{ controller_ip_2 }}"
+            - name: "{{ controller_name_3 }}"
+              ip:
+                type: V4
+                addr: "{{ controller_ip_3 }}"
+        name: cluster01
+        tenant_uuid: "admin"
+%{ endif }
+    
     - name: Get Cloud Information using avi_api_session
       avi_api_session: 
         controller: "{{ controller }}"
