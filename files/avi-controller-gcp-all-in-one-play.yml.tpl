@@ -21,6 +21,12 @@
     se_data_tag: ${se_data_tag}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
+    controller_name_1: ${controller_name_1}
+    controller_ip_1: ${controller_ip_1}
+    controller_name_2: ${controller_name_2}
+    controller_ip_2: ${controller_ip_2}
+    controller_name_3: ${controller_name_3}
+    controller_ip_3: ${controller_ip_3}
 
   tasks:
     - name: Wait for Controller to become ready
