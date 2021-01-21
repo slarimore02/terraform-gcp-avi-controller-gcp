@@ -27,6 +27,7 @@
     controller_ip_2: ${controller_ip_2}
     controller_name_3: ${controller_name_3}
     controller_ip_3: ${controller_ip_3}
+    cloud_router: ${cloud_router}
 
   tasks:
     - name: Wait for Controller to become ready
@@ -102,11 +103,13 @@
           firewall_target_tags:
             - "{{ se_mgmt_tag }}"
             - "{{ se_data_tag }}"
-          vip_allocation_strategy:
-            mode: "{{ vip_allocation_strategy }}"
           dhcp_enabled: true
-          
-
+          vip_allocation_strategy:
+            mode: "{{ vip_allocation_strategy }}" %{ if vip_allocation_strategy == "ILB" }
+            ilb:
+              cloud_router_names:
+                - "{{ cloud_router }}"
+            %{ endif }
     - name: Configure SE-Group
       avi_serviceenginegroup:
         name: "Default-Group" 
@@ -160,18 +163,7 @@
               ip:
                 type: V4
                 addr: "{{ controller_ip_3 }}"
-        name: cluster01
+        name: "cluster01"
         tenant_uuid: "admin"
 %{ endif }
-    
-    - name: Get Cloud Information using avi_api_session
-      avi_api_session: 
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        http_method: get
-        path: cloud
-        params:
-          name: "{{ cloud_name }}"
-        api_version: "{{ controller_version }}"
-      register: cloud_results
+

@@ -11,5 +11,9 @@ resource "google_compute_subnetwork" "avi" {
   ip_cidr_range = var.avi_subnet
   network       = google_compute_network.vpc_network[0].name
   region        = var.region
-  depends_on    = [google_compute_network.vpc_network]
+}
+resource "google_compute_router" "avi" {
+  count   = var.create_networking ? var.vip_allocation_strategy == "ILB" ? 1 : 0 : 0
+  name    = "${var.name_prefix}-avi-router"
+  network = google_compute_network.vpc_network[0].name
 }

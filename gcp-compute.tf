@@ -19,6 +19,7 @@ locals {
     controller_name_2       = var.controller_ha ? google_compute_instance.avi_controller[1].name : null
     controller_ip_3         = var.controller_ha ? google_compute_instance.avi_controller[2].network_interface[0].network_ip : null
     controller_name_3       = var.controller_ha ? google_compute_instance.avi_controller[2].name : null
+    cloud_router            = var.create_networking ? var.vip_allocation_strategy == "ILB" ? google_compute_router.avi[0].name : null : null
   }
 }
 resource "google_compute_instance" "avi_controller" {
