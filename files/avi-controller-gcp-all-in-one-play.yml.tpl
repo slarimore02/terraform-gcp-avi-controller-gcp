@@ -146,14 +146,17 @@
         #  addr: "{{ controller_cluster_vip }}"
         nodes:
             - name: "{{ controller_name_1 }}" 
+              password: "{{ password }}"
               ip:
                 type: V4
                 addr: "{{ controller_ip_1 }}"
             - name: "{{ controller_name_2 }}"
+              password: "{{ password }}"
               ip:
                 type: V4
                 addr: "{{ controller_ip_2 }}"
             - name: "{{ controller_name_3 }}"
+              password: "{{ password }}"
               ip:
                 type: V4
                 addr: "{{ controller_ip_3 }}"
