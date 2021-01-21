@@ -37,7 +37,7 @@ done
 # Login to the Controller with the default credentials and save the session cookies
 COOKIE=$(curl -k --silent --output /dev/null -c - --location --request POST "https://$CONTROLLER_ADDRESS/login" --form username="admin" --form password="$CURRENT_PASSWORD")
 # Setup CSRF Token Cookie
-TOKEN=$(echo $COOKIE |  grep -o -E '.csrftoken.{0,35}' | sed -e 's/^[ \t]*csrftoken[ \t]//')
+TOKEN=$(echo $COOKIE |  grep -o -E '.csrftoken.{0,33}' | sed -e 's/^[ \t]*csrftoken[ \t]//')
 # Setup avi-sessionid Cookie
 SESSIONID=$(echo $COOKIE | grep -o -E '.avi-sessionid.{0,33}' | sed -e 's/^[ \t]*avi-sessionid[ \t]//')
 # Change Password
