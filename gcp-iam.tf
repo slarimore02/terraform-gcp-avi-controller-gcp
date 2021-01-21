@@ -54,7 +54,7 @@ resource "google_service_account_iam_binding" "avi_cluster_vip_role_binding" {
 }
 resource "google_project_iam_custom_role" "network" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_Network_Role"
+  role_id     = "${var.name_prefix}_Avi_Network_Role"
   project     = var.network_project != "" ? var.network_project : var.project
   stage       = "ALPHA"
   title       = "AVI Network Project Role"
@@ -74,7 +74,7 @@ resource "google_project_iam_custom_role" "network" {
 }
 resource "google_project_iam_custom_role" "serviceengine" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_ServiceEngine_Role"
+  role_id     = "${var.name_prefix}_Avi_ServiceEngine_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
   stage       = "ALPHA"
   title       = "AVI Service Engine Project Role"
@@ -122,7 +122,7 @@ resource "google_project_iam_custom_role" "serviceengine" {
 }
 resource "google_project_iam_custom_role" "autoscaling_se" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_Autoscaling_SE_Project_Role"
+  role_id     = "${var.name_prefix}_Avi_Autoscaling_SE_Project_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
   stage       = "ALPHA"
   title       = "AVI Server Autoscaling Role"
@@ -144,7 +144,7 @@ resource "google_project_iam_custom_role" "autoscaling_se" {
 }
 resource "google_project_iam_custom_role" "ilb_byoip" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_ILB_BYOIP_Project_Role"
+  role_id     = "${var.name_prefix}_Avi_ILB_BYOIP_Project_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
   stage       = "ALPHA"
   title       = "AVI ILB and BYOIP Service Engine Project Role"
@@ -183,7 +183,7 @@ resource "google_project_iam_custom_role" "ilb_byoip" {
 }
 resource "google_project_iam_custom_role" "storage" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_Storage_Project_Role"
+  role_id     = "${var.name_prefix}_Avi_Storage_Project_Role"
   project     = var.storage_project != "" ? var.storage_project : var.project
   stage       = "ALPHA"
   title       = "AVI Storage Project Role"
@@ -198,7 +198,7 @@ resource "google_project_iam_custom_role" "storage" {
 }
 resource "google_project_iam_custom_role" "server" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "${var.name_prefix}-Avi_Server_Project_Role"
+  role_id     = "${var.name_prefix}_Avi_Server_Project_Role"
   project     = var.server_project != "" ? var.server_project : var.project
   stage       = "ALPHA"
   title       = "AVI Server Project Role"
@@ -219,7 +219,7 @@ resource "google_project_iam_custom_role" "server" {
 }
 resource "google_project_iam_custom_role" "cluster_vip" {
   count       = var.create_iam ? 1 : 0
-  role_id     = "Avi_Cluster_VIP_Role"
+  role_id     = "${var.name_prefix}_Avi_Cluster_VIP_Role"
   stage       = "ALPHA"
   title       = "AVI Cluster VIP Role"
   description = "Access to resources required for configuring cluster VIP"
