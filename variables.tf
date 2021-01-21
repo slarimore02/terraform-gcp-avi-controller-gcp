@@ -2,8 +2,20 @@ variable "region" {
   description = "The Region that the AVI controller and SEs will be deployed to"
   type        = string
 }
+variable "project" {
+  description = "The project used for the AVI Controller"
+  type        = string
+}
+variable "controller_version" {
+  description = "The AVI Controller version that will be deployed"
+  type        = string
+}
+variable "name_prefix" {
+  description = "This prefix is appended to the names of the Controller and SEs"
+  type        = string
+}
 variable "controller_ha" {
-  description = "If true a HA controller cluster is deployed"
+  description = "If true a HA controller cluster is deployed and configured"
   type        = bool
   default     = "false"
 }
@@ -12,37 +24,10 @@ variable "create_networking" {
   type        = bool
   default     = "true"
 }
-variable "name_prefix" {
-  description = "This prefix is appended to the names of the Controller and SEs"
+variable "avi_subnet" {
+  description = "The CIDR that will be used for creating a subnet in the AVI VPC"
   type        = string
-}
-variable "create_iam" {
-  description = "Create IAM Service Account, Roles, and Role Bindings for Avi GCP Full Access Cloud"
-  type        = bool
-  default     = "false"
-}
-variable "controller_default_password" {
-  description = "This is the default password for the AVI controller image"
-  type        = string
-  sensitive   = false
-}
-variable "service_account_email" {
-  description = "This is the service account email that will be leveraged by the AVI Controller. If the create-iam variable is true then this variable is not required"
-  type        = string
-  default     = ""
-}
-variable "controller_version" {
-  description = "The AVI Controller version that will be deployed"
-  type        = string
-}
-variable "controller_image_gs_path" {
-  description = "The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax"
-  type        = string
-}
-variable "boot_disk_size" {
-  description = "The boot disk size for the AVI controller"
-  type        = number
-  default     = 128
+  default     = "10.255.1.0/24"
 }
 variable "custom_vpc_name" {
   description = "This field can be used to specify an existing VPC for the controller and SEs. The create-networking variable must also be set to false for this network to be used."
@@ -54,23 +39,47 @@ variable "custom_subnetwork_name" {
   type        = string
   default     = null
 }
-variable "machine_type" {
-  description = "The machine type used for the AVI Controller"
+variable "create_iam" {
+  description = "Create IAM Service Account, Roles, and Role Bindings for Avi GCP Full Access Cloud"
+  type        = bool
+  default     = "false"
+}
+variable "controller_default_password" {
+  description = "This is the default password for the AVI controller image and can be found in the image download page."
   type        = string
-  default     = "n1-standard-8"
+  sensitive   = true
 }
 variable "controller_password" {
   description = "The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters"
   type        = string
-  sensitive   = false
+  sensitive   = true
   validation {
     condition     = length(var.controller_password) > 7
     error_message = "The controller_password value must be more than 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters."
   }
 }
-variable "project" {
-  description = "The project used for the AVI Controller"
+variable "service_account_email" {
+  description = "This is the service account email that will be leveraged by the AVI Controller. If the create-iam variable is true then this variable is not required"
   type        = string
+  default     = ""
+}
+variable "controller_image_gs_path" {
+  description = "The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax"
+  type        = string
+}
+variable "machine_type" {
+  description = "The machine type used for the AVI Controller"
+  type        = string
+  default     = "n1-standard-8"
+}
+variable "boot_disk_size" {
+  description = "The boot disk size for the AVI controller"
+  type        = number
+  default     = 128
+  validation {
+    condition     = var.boot_disk_size >= 128
+    error_message = "The Controller boot disk size should be greater than or equal to 128 GB."
+  }
 }
 variable "vip_allocation_strategy" {
   description = "The VIP allocation strategy for the GCP Cloud - ROUTES or ILB"
@@ -101,9 +110,4 @@ variable "server_project" {
   description = "The backend server GCP Project"
   type        = string
   default     = ""
-}
-variable "avi_subnet" {
-  description = "The CIDR that will be used for creating a subnet in the AVI VPC"
-  type        = string
-  default     = "10.255.1.0/24"
 }

@@ -48,7 +48,7 @@ resource "google_compute_instance" "avi_controller" {
     scopes = ["cloud-platform"]
   }
   provisioner "local-exec" {
-    command = "bash -x ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].access_config[0].nat_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\""
+    command = "bash ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].access_config[0].nat_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\""
   }
 
   depends_on = [google_compute_image.controller]

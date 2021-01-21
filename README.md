@@ -68,8 +68,8 @@ module "avi_controller" {
 |------|-------------|------|---------|:--------:|
 | avi\_subnet | The CIDR that will be used for creating a subnet in the AVI VPC | `string` | `"10.255.1.0/24"` | no |
 | boot\_disk\_size | The boot disk size for the AVI controller | `number` | `128` | no |
-| controller\_default\_password | This is the default password for the AVI controller image | `string` | n/a | yes |
-| controller\_ha | If true a HA controller cluster is deployed | `bool` | `"false"` | no |
+| controller\_default\_password | This is the default password for the AVI controller image and can be found in the image download page. | `string` | n/a | yes |
+| controller\_ha | If true a HA controller cluster is deployed and configured | `bool` | `"false"` | no |
 | controller\_image\_gs\_path | The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax | `string` | n/a | yes |
 | controller\_password | The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters | `string` | n/a | yes |
 | controller\_version | The AVI Controller version that will be deployed | `string` | n/a | yes |
