@@ -76,6 +76,11 @@ variable "vip_allocation_strategy" {
   description = "The VIP allocation strategy for the GCP Cloud - ROUTES or ILB"
   type        = string
   default     = "ROUTES"
+
+  validation {
+    condition     = var.vip_allocation_strategy == "ROUTES" || var.vip_allocation_strategy == "ILB"
+    error_message = "The vip_allocation_strategy value must be either ROUTES or ILB."
+  }
 }
 variable "network_project" {
   description = "The GCP Network project"
