@@ -140,7 +140,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ api_version }}"
+        api_version: "{{ controller_version }}"
         #virtual_ip:
         #  type: V4
         #  addr: "{{ controller_cluster_vip }}"
