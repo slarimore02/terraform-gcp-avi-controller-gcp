@@ -53,7 +53,7 @@ resource "google_compute_instance" "avi_controller" {
 
   depends_on = [google_compute_image.controller]
 }
-resource "null_resource" "cluster" {
+resource "null_resource" "ansible_provisioner" {
   # Changes to any instance of the cluster requires re-provisioning
   triggers = {
     controller_instance_ids = join(",", google_compute_instance.avi_controller.*.name)
@@ -79,5 +79,4 @@ resource "null_resource" "cluster" {
       "echo Controller Configuration Completed"
     ]
   }
-
 }

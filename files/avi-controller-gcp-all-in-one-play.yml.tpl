@@ -21,6 +21,7 @@
     se_data_tag: ${se_data_tag}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
+  %{ if controller_ha }
     controller_name_1: ${controller_name_1}
     controller_ip_1: ${controller_ip_1}
     controller_name_2: ${controller_name_2}
@@ -28,7 +29,7 @@
     controller_name_3: ${controller_name_3}
     controller_ip_3: ${controller_ip_3}
     cloud_router: ${cloud_router}
-
+  %{ endif }
   tasks:
     - name: Wait for Controller to become ready
       wait_for:
