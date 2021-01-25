@@ -34,7 +34,7 @@ terraform {
   backend "local" {
   }
 }
-module "avi_controller" {
+module "avi-controller-gcp" {
   source  = "slarimore02/avi-controller-gcp/gcp"
   version = "1.0.x"
 
