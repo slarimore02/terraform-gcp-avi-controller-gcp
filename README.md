@@ -30,7 +30,12 @@ The following packages must be installed on the host operating system:
 
 ## Usage
 ```hcl
+terraform {
+  backend "local" {
+  }
+}
 module "avi_controller" {
+  source  = "slarimore02/avi-controller-gcp/gcp"
   version = "1.0.x"
 
   region = "us-west1"
@@ -44,6 +49,9 @@ module "avi_controller" {
   name_prefix = "avi"
   project = "gcp-project"
   vpc_network_name = "avi-vpc-network"
+}
+output "controller-ip" { 
+  value = module.avi_controller_gcp.public_address
 }
 ```
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -92,6 +100,6 @@ module "avi_controller" {
 
 | Name | Description |
 |------|-------------|
-| avi\_controller\_public\_address | The public IP(s) of the AVI Controller |
+| public\_address | The public IP(s) of the AVI Controller |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
