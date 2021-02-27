@@ -82,9 +82,9 @@ output "controller-ip" {
 | controller\_password | The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters | `string` | n/a | yes |
 | controller\_version | The AVI Controller version that will be deployed | `string` | n/a | yes |
 | create\_iam | Create IAM Service Account, Roles, and Role Bindings for Avi GCP Full Access Cloud | `bool` | `"false"` | no |
-| create\_networking | This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom-vpc-name and custom-subnetwork-name must be set. | `bool` | `"true"` | no |
-| custom\_subnetwork\_name | This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create-networking variable must also be set to false for this network to be used. | `string` | `null` | no |
-| custom\_vpc\_name | This field can be used to specify an existing VPC for the controller and SEs. The create-networking variable must also be set to false for this network to be used. | `string` | `null` | no |
+| create\_networking | This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom\_vpc\_name and custom\_subnetwork\_name must be set. | `bool` | `"true"` | no |
+| custom\_subnetwork\_name | This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create\_networking variable must also be set to false for this network to be used. | `string` | `null` | no |
+| custom\_vpc\_name | This field can be used to specify an existing VPC for the controller and SEs. The create\_networking variable must also be set to false for this network to be used. | `string` | `null` | no |
 | machine\_type | The machine type used for the AVI Controller | `string` | `"n1-standard-8"` | no |
 | name\_prefix | This prefix is appended to the names of the Controller and SEs | `string` | n/a | yes |
 | network\_project | The GCP Network project | `string` | `""` | no |

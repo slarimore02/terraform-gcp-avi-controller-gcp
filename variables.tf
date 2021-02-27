@@ -20,7 +20,7 @@ variable "controller_ha" {
   default     = "false"
 }
 variable "create_networking" {
-  description = "This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom-vpc-name and custom-subnetwork-name must be set."
+  description = "This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom_vpc_name and custom_subnetwork_name must be set."
   type        = bool
   default     = "true"
 }
@@ -30,12 +30,12 @@ variable "avi_subnet" {
   default     = "10.255.1.0/24"
 }
 variable "custom_vpc_name" {
-  description = "This field can be used to specify an existing VPC for the controller and SEs. The create-networking variable must also be set to false for this network to be used."
+  description = "This field can be used to specify an existing VPC for the controller and SEs. The create_networking variable must also be set to false for this network to be used."
   type        = string
   default     = null
 }
 variable "custom_subnetwork_name" {
-  description = "This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create-networking variable must also be set to false for this network to be used."
+  description = "This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create_networking variable must also be set to false for this network to be used."
   type        = string
   default     = null
 }
