@@ -38,7 +38,8 @@ resource "google_compute_instance" "avi_controller" {
   }
 
   network_interface {
-    subnetwork = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
+    subnetwork         = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
+    subnetwork_project = var.network_project == "" ? null : var.network_project
     access_config {
     }
   }
