@@ -23,10 +23,11 @@ locals {
   }
 }
 resource "google_compute_instance" "avi_controller" {
-  count        = var.controller_ha ? 3 : 1
-  name         = "${var.name_prefix}-avi-controller-${count.index + 1}"
-  machine_type = var.machine_type
-  zone         = data.google_compute_zones.available.names[count.index]
+  count                     = var.controller_ha ? 3 : 1
+  name                      = "${var.name_prefix}-avi-controller-${count.index + 1}"
+  machine_type              = var.machine_type
+  zone                      = data.google_compute_zones.available.names[count.index]
+  allow_stopping_for_update = "true"
 
   tags = ["avi-controller"]
 
