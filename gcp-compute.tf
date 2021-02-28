@@ -46,7 +46,7 @@ resource "google_compute_instance" "avi_controller" {
   }
 
   service_account {
-    email  = var.create_iam ? google_service_account.avi_service_account[0].email : var.service_account_email
+    email  = data.google_service_account.avi.email
     scopes = ["cloud-platform"]
   }
   provisioner "local-exec" {

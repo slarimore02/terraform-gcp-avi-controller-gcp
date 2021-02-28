@@ -40,7 +40,7 @@ variable "custom_subnetwork_name" {
   default     = null
 }
 variable "create_iam" {
-  description = "Create IAM Service Account, Roles, and Role Bindings for Avi GCP Full Access Cloud"
+  description = "Create IAM Roles and Role Bindings necessary for the Avi GCP Full Access Cloud. If not set the Roles and permissions in this document must be associated with the controller service account - https://avinetworks.com/docs/latest/gcp-full-access-roles-and-permissions/"
   type        = bool
   default     = "false"
 }
@@ -59,9 +59,8 @@ variable "controller_password" {
   }
 }
 variable "service_account_email" {
-  description = "This is the service account email that will be leveraged by the AVI Controller. If the create-iam variable is true then this variable is not required"
+  description = "This is the service account that will be leveraged by the AVI Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA"
   type        = string
-  default     = ""
 }
 variable "controller_image_gs_path" {
   description = "The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax"
@@ -92,22 +91,22 @@ variable "vip_allocation_strategy" {
   }
 }
 variable "network_project" {
-  description = "The GCP Network project"
+  description = "The GCP Network project that the Controller and SEs will use. If not set the project variable will be used"
   type        = string
   default     = ""
 }
 variable "service_engine_project" {
-  description = "The project used for AVI Service Engines"
+  description = "The project used for AVI Service Engines. If not set the project variable will be used"
   type        = string
   default     = ""
 }
 variable "storage_project" {
-  description = "The storage project used for the AVI Controller Image"
+  description = "The storage project used for the AVI Controller Image. If not set the project variable will be used"
   type        = string
   default     = ""
 }
 variable "server_project" {
-  description = "The backend server GCP Project"
+  description = "The backend server GCP Project. If not set the project variable will be used"
   type        = string
   default     = ""
 }

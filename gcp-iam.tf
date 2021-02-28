@@ -1,53 +1,48 @@
-resource "google_service_account" "avi_service_account" {
-  count        = var.create_iam ? 1 : 0
-  account_id   = "avi-service-account"
-  display_name = "AVI Service Account"
-}
 resource "google_service_account_iam_binding" "avi_network_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.network[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_se_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.serviceengine[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_autoscaling_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.autoscaling_se[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_ilb_byoip_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.ilb_byoip[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_storage_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.storage[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_server_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.server[0].id
 
   members = []
 }
 resource "google_service_account_iam_binding" "avi_cluster_vip_role_binding" {
   count              = var.create_iam ? 1 : 0
-  service_account_id = google_service_account.avi_service_account[0].name
+  service_account_id = data.google_service_account.avi.name
   role               = google_project_iam_custom_role.cluster_vip[0].id
 
   members = []
