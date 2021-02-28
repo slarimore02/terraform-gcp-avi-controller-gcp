@@ -67,14 +67,14 @@ output "controller-ip" {
 | Name | Version |
 |------|---------|
 | terraform | >= 0.13.6 |
-| google | ~> 3.51.0 |
+| google | ~> 3.58.0 |
 | null | 3.0.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| google | ~> 3.51.0 |
+| google | ~> 3.58.0 |
 | null | 3.0.0 |
 
 ## Inputs
