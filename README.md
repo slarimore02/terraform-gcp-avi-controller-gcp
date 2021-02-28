@@ -4,8 +4,8 @@ This Terraform module creates and configures an AVI (NSX Advanced Load-Balancer)
 ## Module Functions
 The module is meant to be modular and can create all or none of the prerequiste resources needed for the AVI GCP Deployment including:
 * VPC and Subnet for the Controller (optional with create_networking variable)
-* IAM Roles, Service Account, and Role Bindings (optional with create_iam variable)
-* GCP Compute Image from the bucket controller file
+* IAM Roles and Role Bindings for supplied Service Account (optional with create_iam variable)
+* GCP Compute Image from the provided bucket controller file
 * Firewall Rules for AVI Controller and SE communication
 * GCP Compute Instance using the Controller Compute Image
 
@@ -15,8 +15,15 @@ During the creation of the Controller instance the following initialization step
 * Run Ansible playbook to configure initial settings and GCP Full Access Cloud 
 
 # Environment Requirements
+
+## Google Cloud Platform
+The following are GCP prerequisites for running this module:
+* Service Account created for the Avi Controller
+* Projects identified for the Controller, Network, Service Engines, Storage, and Backend Servers. By default this be the a single project as set by the "project" variable. Optionally the "network_project", "service_engine_project", "storage_project", and "server_project" variables can be set to use a different project than the project the Controller will be deployed to. 
+* If more than 1 project will be used "Disable Cross-Project Service Account Usage" organizational policy must be set to "Not enforced" and the the Service Account must be added to those additional projects. 
+
 ## Google Provider
-For authenticating to GCP you must leverage either the "GOOGLE_APPLICATION_CREDENTIALS={{path}}" environment variable or use "gcloud auth application-default login"
+For authenticating to GCP you must leverage either the "GOOGLE_APPLICATION_CREDENTIALS={{path_to_service_account_key}}" environment variable or use "gcloud auth application-default login"
 ## Controller Image
 The AVI Controller image for GCP should be uploaded to a GCP Cloud Storage bucket before running this module with the path specified in the controller-image-gs-path variable. This can be done with the following gsutil commands:
 
