@@ -51,7 +51,7 @@ resource "google_project_iam_custom_role" "network" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Network_Role"
   project     = var.network_project != "" ? var.network_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Network Project Role"
   description = "Access to resources required for operations in Network Project"
   permissions = [
@@ -71,7 +71,7 @@ resource "google_project_iam_custom_role" "serviceengine" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_ServiceEngine_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Service Engine Project Role"
   description = "Access to resources required for operations on Service Engines and Virtual Services"
   permissions = [
@@ -119,7 +119,7 @@ resource "google_project_iam_custom_role" "autoscaling_se" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Autoscaling_SE_Project_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Server Autoscaling Role"
   description = "Access to resources required for GCP Server Autoscaling in Service Engine Project"
   permissions = [
@@ -141,7 +141,7 @@ resource "google_project_iam_custom_role" "ilb_byoip" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_ILB_BYOIP_Project_Role"
   project     = var.service_engine_project != "" ? var.service_engine_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI ILB and BYOIP Service Engine Project Role"
   description = "Access to resources required for ILB operations in Service Engine Project"
   permissions = [
@@ -180,7 +180,7 @@ resource "google_project_iam_custom_role" "storage" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Storage_Project_Role"
   project     = var.storage_project != "" ? var.storage_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Storage Project Role"
   description = "Access to resources required for operations on GCS Buckets and Objects"
   permissions = [
@@ -195,7 +195,7 @@ resource "google_project_iam_custom_role" "server" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Server_Project_Role"
   project     = var.server_project != "" ? var.server_project : var.project
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Server Project Role"
   description = "Access to resources required for collecting servers information"
   permissions = [
@@ -215,7 +215,7 @@ resource "google_project_iam_custom_role" "server" {
 resource "google_project_iam_custom_role" "cluster_vip" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Cluster_VIP_Role"
-  stage       = "ALPHA"
+  stage       = "BETA"
   title       = "AVI Cluster VIP Role"
   description = "Access to resources required for configuring cluster VIP"
   permissions = [
