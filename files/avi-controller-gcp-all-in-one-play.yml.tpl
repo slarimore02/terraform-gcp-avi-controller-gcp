@@ -102,8 +102,7 @@
               vpc_project_id: "{{ vpc_project_id }}"
               vpc_network_name: "{{ vpc_network_name }}"
           firewall_target_tags:
-            - "{{ se_mgmt_tag }}"
-            - "{{ se_data_tag }}"
+            - "avi-se"
           dhcp_enabled: true
           vip_allocation_strategy:
             mode: "{{ vip_allocation_strategy }}" %{ if vip_allocation_strategy == "ILB" }
