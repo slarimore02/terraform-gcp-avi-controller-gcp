@@ -41,8 +41,8 @@ resource "google_compute_instance" "avi_controller" {
   network_interface {
     subnetwork         = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
     subnetwork_project = var.network_project == "" ? null : var.network_project
-    access_config {
-    }
+    #access_config {
+    #}
   }
 
   service_account {
@@ -63,7 +63,7 @@ resource "null_resource" "ansible_provisioner" {
 
   connection {
     type     = "ssh"
-    host     = google_compute_instance.avi_controller[0].network_interface[0].access_config[0].nat_ip
+    host     = var.controller_public_address ? google_compute_instance.avi_controller[0].network_interface[0].access_config[0].nat_ip : google_compute_instance.avi_controller[0].network_interface[0].network_ip
     user     = "admin"
     timeout  = "600s"
     password = var.controller_password

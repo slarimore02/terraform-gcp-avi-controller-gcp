@@ -24,6 +24,11 @@ variable "create_networking" {
   type        = bool
   default     = "true"
 }
+variable "controller_public_address" {
+  description = "This variable controls if the Controller has a Public IP Address. When set to false the Ansible provisioner will connect to the private IP of the Controller."
+  type        = bool
+  default     = "false"
+}
 variable "avi_subnet" {
   description = "The CIDR that will be used for creating a subnet in the AVI VPC"
   type        = string

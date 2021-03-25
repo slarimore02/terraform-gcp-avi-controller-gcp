@@ -87,6 +87,7 @@ output "controller-ip" {
 | controller\_ha | If true a HA controller cluster is deployed and configured | `bool` | `"false"` | no |
 | controller\_image\_gs\_path | The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax | `string` | n/a | yes |
 | controller\_password | The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters | `string` | n/a | yes |
+| controller\_public\_address | This variable controls if the Controller has a Public IP Address. When set to false the Ansible provisioner will connect to the private IP of the Controller. | `bool` | `"false"` | no |
 | controller\_version | The AVI Controller version that will be deployed | `string` | n/a | yes |
 | create\_iam | Create IAM Roles and Role Bindings necessary for the Avi GCP Full Access Cloud. If not set the Roles and permissions in this document must be associated with the controller service account - https://avinetworks.com/docs/latest/gcp-full-access-roles-and-permissions/ | `bool` | `"false"` | no |
 | create\_networking | This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom\_vpc\_name and custom\_subnetwork\_name must be set. | `bool` | `"true"` | no |
