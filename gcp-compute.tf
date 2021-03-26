@@ -8,8 +8,6 @@ locals {
     region                  = var.region
     se_project_id           = var.service_engine_project != "" ? var.service_engine_project : var.project
     se_name_prefix          = var.name_prefix
-    se_mgmt_tag             = google_compute_firewall.avi_se_mgmt.name
-    se_data_tag             = google_compute_firewall.avi_se_to_se.name
     vip_allocation_strategy = var.vip_allocation_strategy
     zones                   = data.google_compute_zones.available.names
     controller_ha           = var.controller_ha
@@ -41,8 +39,10 @@ resource "google_compute_instance" "avi_controller" {
   network_interface {
     subnetwork         = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
     subnetwork_project = var.network_project == "" ? null : var.network_project
-    #access_config {
-    #}
+    dynamic "access_config" {
+      for_each = var.controller_public_address ? [""] : []
+      content {}
+    }
   }
 
   service_account {

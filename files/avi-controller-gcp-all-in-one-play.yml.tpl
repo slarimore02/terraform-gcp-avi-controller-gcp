@@ -17,8 +17,6 @@
     region: ${region}
     se_project_id: ${se_project_id}
     se_name_prefix: ${se_name_prefix}
-    se_mgmt_tag: ${se_mgmt_tag}
-    se_data_tag: ${se_data_tag}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
   %{ if controller_ha }
@@ -60,12 +58,12 @@
               addr: "3.us.pool.ntp.org"
               type: DNS
         portal_configuration:
-          allow_basic_authentication: true
+          allow_basic_authentication: false
           disable_remote_cli_shell: false
           enable_clickjacking_protection: true
           enable_http: true
           enable_https: true
-          password_strength_check: false
+          password_strength_check: true
           redirect_to_https: true
           sslkeyandcertificate_refs:
             - "/api/sslkeyandcertificate?name=System-Default-Portal-Cert"
@@ -103,7 +101,7 @@
               vpc_network_name: "{{ vpc_network_name }}"
           firewall_target_tags:
             - "avi-se"
-          dhcp_enabled: true
+          dhcp_enabled: false
           vip_allocation_strategy:
             mode: "{{ vip_allocation_strategy }}" %{ if vip_allocation_strategy == "ILB" }
             ilb:

@@ -13,7 +13,7 @@ resource "google_compute_subnetwork" "avi" {
   region        = var.region
 }
 resource "google_compute_router" "avi" {
-  count   = var.create_networking ? var.vip_allocation_strategy == "ILB" ? 1 : 0 : 0
+  count   = var.create_networking ? var.vip_allocation_strategy == "ILB" ? var.create_cloud_router ? 1 : 0 : 0 : 0
   name    = "${var.name_prefix}-avi-router"
   network = google_compute_network.vpc_network[0].name
 }

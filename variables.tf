@@ -29,6 +29,11 @@ variable "controller_public_address" {
   type        = bool
   default     = "false"
 }
+variable "create_cloud_router" {
+  description = "This variable is used to create a GCP Cloud Router when both the create_networking variable = true and the vip_allocation_strategy = ILB"
+  type        = bool
+  default     = "false"
+}
 variable "avi_subnet" {
   description = "The CIDR that will be used for creating a subnet in the AVI VPC"
   type        = string
