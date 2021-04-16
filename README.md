@@ -107,6 +107,8 @@ output "controller-ip" {
 
 ## Outputs
 
-No output.
+| Name | Description |
+|------|-------------|
+| controller\_address | The IP Address(es) of the AVI Controller(s) |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
