@@ -19,6 +19,14 @@
     se_name_prefix: ${se_name_prefix}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
+  %{ if configure_ipam_profile }  
+    ipam_network_host: ${ipam_network_host}
+    ipam_network_netmask: ${ipam_network_netmask}
+    ipam_network_range: ${ipam_network_range}
+  %{ endif }
+  %{ if configure_dns_profile }
+    dns_service_domain: ${dns_service_domain}
+  %{ endif }
   %{ if controller_ha }
     controller_name_1: ${controller_name_1}
     controller_ip_1: ${controller_ip_1}
@@ -26,6 +34,8 @@
     controller_ip_2: ${controller_ip_2}
     controller_name_3: ${controller_name_3}
     controller_ip_3: ${controller_ip_3}
+  %{ endif }
+  %{ if vip_allocation_strategy == "ILB" }
     cloud_router: ${cloud_router}
   %{ endif }
   tasks:
@@ -108,6 +118,17 @@
               cloud_router_names:
                 - "{{ cloud_router }}"
             %{ endif }
+    - name: Set Backup Passphrase
+      avi_backupconfiguration:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        api_version: "{{ controller_version }}"
+        name: Backup-Configuration
+        backup_passphrase: "{{ password }}"
+        upload_to_remote_host: false
+
     - name: Configure SE-Group
       avi_serviceenginegroup:
         name: "Default-Group" 
@@ -123,17 +144,67 @@
         realtime_se_metrics:
           duration: "10080"
           enabled: true
-    
-    - name: Set Backup Passphrase
-      avi_backupconfiguration:
+%{ if configure_ipam_profile }
+    - name: Create Avi Network Object
+      avi_network:
         controller: "{{ controller }}"
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
         api_version: "{{ controller_version }}"
-        name: Backup-Configuration
-        backup_passphrase: "{{ password }}"
-        upload_to_remote_host: false
+        name: "network-{{ network_cidr }}"
+        dhcp_enabled: false
+        configured_subnets:
+        - prefix:
+            ip_addr:
+              addr: "{{ ipam_network_host }}"
+              type: V4
+            mask: "{{ ipam_network_netmask }}"
+          static_ip_ranges:
+          - range:
+              begin:
+                addr: "{{ ipam_network_range.0 }}"
+                type: V4
+              end:
+                addr: "{{ ipam_network_range.1 }}"
+                type: V4
+            type: STATIC_IPS_FOR_VIP_AND_SE
+        synced_from_se: false
+        ip6_autocfg_enabled: false
+      register: create_network
+
+    - name: Create Avi IPAM Profile
+      avi_ipamdnsproviderprofile:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        name: Avi_IPAM
+        api_version: "{{ controller_version }}"
+        type: IPAMDNS_TYPE_INTERNAL
+        internal_profile:
+          ttl: 30
+          usable_networks:
+          - nw_ref: "{{ create_network.obj.url }}"
+        allocate_ip_in_vrf: false
+%{ endif }
+%{ if configure_dns_profile }
+    - name: Create Avi DNS Profile
+      avi_ipamdnsproviderprofile:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        state: present
+        name: Avi_DNS
+        api_version: "{{ controller_version }}"
+        type: IPAMDNS_TYPE_INTERNAL_DNS
+        internal_profile:
+          dns_service_domain:
+          - domain_name: "{{ dns_service_domain }}"
+            pass_through: true
+          ttl: 30
+      register: create_dns
+%{ endif }
 %{ if controller_ha }
     - name: Controller Cluster Configuration
       avi_cluster:

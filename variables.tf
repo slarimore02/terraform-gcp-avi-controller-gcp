@@ -10,6 +10,31 @@ variable "controller_version" {
   description = "The AVI Controller version that will be deployed"
   type        = string
 }
+variable "configure_ipam_profile" {
+  description = "Configure AVI IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice_network variable must also be set"
+  type        = bool
+  default     = "false"
+}
+variable "ipam_network" {
+  description = "The Avi Network object created for Virtual Services. This CIDR should be unique to Avi and not overlap with a VPC CIDR. The vs_network_range variable must also be set. An example is 192.168.1.0/24"
+  type        = string
+  default     = ""
+}
+variable "ipam_network_range" {
+  description = "A list of with the Network IP range for Virtual Services. An example is [\"192.168.1.10\", \"192.168.1.30\"]"
+  type        = list(string)
+  default     = [""]
+}
+variable "configure_dns_profile" {
+  description = "Configure AVI DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns_service_domain variable must also be set"
+  type        = bool
+  default     = "false"
+}
+variable "dns_service_domain" {
+  description = "The DNS Domain that will be available for Virtual Services. Avi will be the Authorative Nameserver for this domain and NS records may need to be created pointing to the Avi Service Engine addresses. An example is demo.avi.com"
+  type        = string
+  default     = ""
+}
 variable "name_prefix" {
   description = "This prefix is appended to the names of the Controller and SEs"
   type        = string

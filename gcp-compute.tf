@@ -18,6 +18,12 @@ locals {
     controller_ip_3         = var.controller_ha ? google_compute_instance.avi_controller[2].network_interface[0].network_ip : null
     controller_name_3       = var.controller_ha ? google_compute_instance.avi_controller[2].name : null
     cloud_router            = var.create_networking ? var.vip_allocation_strategy == "ILB" ? google_compute_router.avi[0].name : null : null
+    configure_ipam_profile  = var.configure_ipam_profile
+    ipam_network_host       = cidrhost(var.ipam_network, 0)
+    ipam_network_netmask    = substr(var.ipam_network, -2, 2)
+    ipam_network_range      = var.ipam_network_range
+    configure_dns_profile   = var.configure_dns_profile
+    dns_service_domain      = var.dns_service_domain
   }
 }
 resource "google_compute_instance" "avi_controller" {
@@ -52,7 +58,6 @@ resource "google_compute_instance" "avi_controller" {
   provisioner "local-exec" {
     command = var.controller_public_address ? "bash ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].access_config[0].nat_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\"" : "bash ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].network_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\""
   }
-
   depends_on = [google_compute_image.controller]
 }
 resource "null_resource" "ansible_provisioner" {
@@ -70,10 +75,14 @@ resource "null_resource" "ansible_provisioner" {
   }
 
   provisioner "file" {
-
     content = templatefile("${path.module}/files/avi-controller-gcp-all-in-one-play.yml.tpl",
     local.cloud_settings)
     destination = "/home/admin/avi-controller-gcp-all-in-one-play.yml"
+  }
+  provisioner "file" {
+    content = templatefile("${path.module}/files/avi-cleanup.yml.tpl",
+    local.cloud_settings)
+    destination = "/home/admin/avi-cleanup.yml"
   }
   provisioner "remote-exec" {
     inline = [
