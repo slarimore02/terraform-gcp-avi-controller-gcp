@@ -14,6 +14,11 @@ During the creation of the Controller instance the following initialization step
 * Copy Ansible playbook to controller using the assigned public IP
 * Run Ansible playbook to configure initial settings and GCP Full Access Cloud 
 
+Optionally the following Avi configurations can be created:
+* Avi IPAM Profile (configure_ipam_profile variable)
+* Avi DNS Profile (configure_dns_profile variable)
+* DNS Virtual Service (configure_dns_vs variable)
+
 # Environment Requirements
 
 ## Google Cloud Platform
@@ -48,17 +53,17 @@ module "avi-controller-gcp" {
   region = "us-west1"
   create_networking = "true"
   create_iam = "false"
-  controller_version = "20.1.3"
+  controller_default_password = "Value Redacted and available within the VMware Customer Portal"
+  avi_version = "20.1.3"
   service_account_email = "<sa-account>@<project>.iam.gserviceaccount.com"
-  controller_default_password = ""
   controller_image_gs_path = "<bucket>/gcp_controller-20.1.3-9085.tar.gz"
   controller_password = "password"
   name_prefix = "avi"
   project = "gcp-project"
   vpc_network_name = "avi-vpc-network"
 }
-output "controller-ip" { 
-  value = module.avi_controller_gcp.public_address
+output "controller_address" { 
+  value = module.avi_controller_gcp.controller_address
 }
 ```
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
@@ -82,6 +87,7 @@ output "controller-ip" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | avi\_subnet | The CIDR that will be used for creating a subnet in the AVI VPC | `string` | `"10.255.1.0/24"` | no |
+| avi\_version | The version of AVI that will be deployed | `string` | n/a | yes |
 | boot\_disk\_size | The boot disk size for the AVI controller | `number` | `128` | no |
 | configure\_dns\_profile | Configure AVI DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns\_service\_domain variable must also be set | `bool` | `"false"` | no |
 | configure\_dns\_vs | Create DNS Virtual Service. The configure\_dns\_profile and configure\_ipam\_profile variables must be set to true and their associated configuration variables must also be set | `bool` | `"false"` | no |
@@ -91,7 +97,6 @@ output "controller-ip" {
 | controller\_image\_gs\_path | The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax | `string` | n/a | yes |
 | controller\_password | The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters | `string` | n/a | yes |
 | controller\_public\_address | This variable controls if the Controller has a Public IP Address. When set to false the Ansible provisioner will connect to the private IP of the Controller. | `bool` | `"false"` | no |
-| controller\_version | The AVI Controller version that will be deployed | `string` | n/a | yes |
 | create\_cloud\_router | This variable is used to create a GCP Cloud Router when both the create\_networking variable = true and the vip\_allocation\_strategy = ILB | `bool` | `"false"` | no |
 | create\_iam | Create IAM Roles and Role Bindings necessary for the Avi GCP Full Access Cloud. If not set the Roles and permissions in this document must be associated with the controller service account - https://avinetworks.com/docs/latest/gcp-full-access-roles-and-permissions/ | `bool` | `"false"` | no |
 | create\_networking | This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom\_vpc\_name and custom\_subnetwork\_name must be set. | `bool` | `"true"` | no |

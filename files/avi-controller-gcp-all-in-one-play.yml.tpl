@@ -13,7 +13,7 @@
     vpc_network_name: ${se_vpc_network_name}
     vpc_subnet_name: ${se_mgmt_subnet_name}
     vpc_project_id: ${vpc_project_id}
-    controller_version: ${controller_version}
+    avi_version: ${avi_version}
     region: ${region}
     se_project_id: ${se_project_id}
     se_name_prefix: ${se_name_prefix}
@@ -87,7 +87,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
 %{ if configure_ipam_profile }
     - name: Create Avi Network Object
       avi_network:
@@ -95,7 +95,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         name: "network-{{ ipam_network }}"
         dhcp_enabled: false
         configured_subnets:
@@ -124,7 +124,7 @@
         password: "{{ password }}"
         state: present
         name: Avi_IPAM
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         type: IPAMDNS_TYPE_INTERNAL
         internal_profile:
           ttl: 30
@@ -141,7 +141,7 @@
         password: "{{ password }}"
         state: present
         name: Avi_DNS
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         type: IPAMDNS_TYPE_INTERNAL_DNS
         internal_profile:
           dns_service_domain:
@@ -157,7 +157,7 @@
         password: "{{ password }}"
         state: present
         name: "{{ cloud_name }}"
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         vtype: CLOUD_GCP
         dhcp_enabled: true
         license_type: "LIC_CORES" 
@@ -192,7 +192,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         name: Backup-Configuration
         backup_passphrase: "{{ password }}"
         upload_to_remote_host: false
@@ -204,7 +204,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         cloud_ref: "/api/cloud?name={{ cloud_name }}"
         ha_mode: HA_MODE_SHARED_PAIR
         min_scaleout_per_vs: 2
@@ -221,7 +221,7 @@
         controller: "{{ controller }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         http_method: post
         path: "vsvip"
         tenant: "admin"
@@ -264,7 +264,7 @@
         controller: "{{ controller }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         http_method: post
         path: "virtualservice"
         tenant: "admin"
@@ -343,7 +343,7 @@
         controller: "{{ controller }}"
         username: "{{ username }}"
         password: "{{ password }}"
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         avi_api_update_method: patch
         avi_api_patch_op: add
         tenant: admin
@@ -356,7 +356,7 @@
         username: "{{ username }}"
         password: "{{ password }}"
         state: present
-        api_version: "{{ controller_version }}"
+        api_version: "{{ avi_version }}"
         #virtual_ip:
         #  type: V4
         #  addr: "{{ controller_cluster_vip }}"

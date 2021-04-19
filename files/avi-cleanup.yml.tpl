@@ -10,7 +10,7 @@
     cloud_name: "Default-Cloud"
     ansible_become: yes
     ansible_become_password: "{{ password }}"
-    controller_version: ${controller_version}
+    avi_version: ${avi_version}
     tenant_name: "admin"
     
   tasks:

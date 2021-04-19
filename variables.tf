@@ -6,8 +6,8 @@ variable "project" {
   description = "The project used for the AVI Controller"
   type        = string
 }
-variable "controller_version" {
-  description = "The AVI Controller version that will be deployed"
+variable "avi_version" {
+  description = "The version of AVI that will be deployed"
   type        = string
 }
 variable "configure_ipam_profile" {

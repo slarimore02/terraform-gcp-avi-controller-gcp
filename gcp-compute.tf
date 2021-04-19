@@ -5,7 +5,7 @@ locals {
     se_mgmt_subnet_name       = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
     controller_public_address = var.controller_public_address
     vpc_project_id            = var.network_project != "" ? var.network_project : var.project
-    controller_version        = var.controller_version
+    avi_version               = var.avi_version
     region                    = var.region
     se_project_id             = var.service_engine_project != "" ? var.service_engine_project : var.project
     se_name_prefix            = var.name_prefix
