@@ -1,17 +1,26 @@
 variable "region" {
-  description = "The Region that the AVI controller and SEs will be deployed to"
+  description = "The Region that the Avi controller and SEs will be deployed to"
   type        = string
 }
 variable "project" {
-  description = "The project used for the AVI Controller"
+  description = "The project used for the Avi Controller"
   type        = string
 }
 variable "avi_version" {
-  description = "The version of AVI that will be deployed"
+  description = "The version of Avi that will be deployed"
   type        = string
 }
+variable "controller_size" {
+  description = "This value determines the number of vCPUs and memory allocated for the Avi Controller. Possible values are small, medium, or large."
+  type        = string
+  default     = "small"
+  validation {
+    condition     = contains(["small", "medium", "large"], var.controller_size)
+    error_message = "Acceptable values are small, medium, or large."
+  }
+}
 variable "configure_ipam_profile" {
-  description = "Configure AVI IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice_network variable must also be set"
+  description = "Configure Avi IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice_network variable must also be set"
   type        = bool
   default     = "false"
 }
@@ -26,12 +35,12 @@ variable "ipam_network_range" {
   default     = [""]
 }
 variable "configure_dns_profile" {
-  description = "Configure AVI DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns_service_domain variable must also be set"
+  description = "Configure Avi DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns_service_domain variable must also be set"
   type        = bool
   default     = "false"
 }
 variable "dns_service_domain" {
-  description = "The DNS Domain that will be available for Virtual Services. Avi will be the Authorative Nameserver for this domain and NS records may need to be created pointing to the Avi Service Engine addresses. An example is demo.avi.com"
+  description = "The DNS Domain that will be available for Virtual Services. Avi will be the Authorative Nameserver for this domain and NS records may need to be created pointing to the Avi Service Engine addresses. An example is demo.Avi.com"
   type        = string
   default     = ""
 }
@@ -50,7 +59,7 @@ variable "controller_ha" {
   default     = "false"
 }
 variable "create_networking" {
-  description = "This variable controls the VPC and subnet creation for the AVI Controller. When set to false the custom_vpc_name and custom_subnetwork_name must be set."
+  description = "This variable controls the VPC and subnet creation for the Avi Controller. When set to false the custom_vpc_name and custom_subnetwork_name must be set."
   type        = bool
   default     = "true"
 }
@@ -65,7 +74,7 @@ variable "create_cloud_router" {
   default     = "false"
 }
 variable "avi_subnet" {
-  description = "The CIDR that will be used for creating a subnet in the AVI VPC"
+  description = "The CIDR that will be used for creating a subnet in the Avi VPC"
   type        = string
   default     = "10.255.1.0/24"
 }
@@ -80,17 +89,17 @@ variable "custom_subnetwork_name" {
   default     = null
 }
 variable "create_iam" {
-  description = "Create IAM Roles and Role Bindings necessary for the Avi GCP Full Access Cloud. If not set the Roles and permissions in this document must be associated with the controller service account - https://avinetworks.com/docs/latest/gcp-full-access-roles-and-permissions/"
+  description = "Create IAM Roles and Role Bindings necessary for the Avi GCP Full Access Cloud. If not set the Roles and permissions in this document must be associated with the controller service account - https://Avinetworks.com/docs/latest/gcp-full-access-roles-and-permissions/"
   type        = bool
   default     = "false"
 }
 variable "controller_default_password" {
-  description = "This is the default password for the AVI controller image and can be found in the image download page."
+  description = "This is the default password for the Avi controller image and can be found in the image download page."
   type        = string
   sensitive   = true
 }
 variable "controller_password" {
-  description = "The password that will be used authenticating with the AVI Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters"
+  description = "The password that will be used authenticating with the Avi Controller. This password be a minimum of 8 characters and contain at least one each of uppercase, lowercase, numbers, and special characters"
   type        = string
   sensitive   = true
   validation {
@@ -99,20 +108,20 @@ variable "controller_password" {
   }
 }
 variable "service_account_email" {
-  description = "This is the service account that will be leveraged by the AVI Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA"
+  description = "This is the service account that will be leveraged by the Avi Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA"
   type        = string
 }
 variable "controller_image_gs_path" {
-  description = "The Google Storage path to the GCP AVI Controller tar.gz image file using the bucket/filename syntax"
+  description = "The Google Storage path to the GCP Avi Controller tar.gz image file using the bucket/filename syntax"
   type        = string
 }
-variable "machine_type" {
-  description = "The machine type used for the AVI Controller"
+variable "custom_machine_type" {
+  description = "This value overides the machine type used for the Avi Controller"
   type        = string
-  default     = "n1-standard-8"
+  default     = ""
 }
 variable "boot_disk_size" {
-  description = "The boot disk size for the AVI controller"
+  description = "The boot disk size for the Avi controller"
   type        = number
   default     = 128
   validation {
@@ -136,12 +145,12 @@ variable "network_project" {
   default     = ""
 }
 variable "service_engine_project" {
-  description = "The project used for AVI Service Engines. If not set the project variable will be used"
+  description = "The project used for Avi Service Engines. If not set the project variable will be used"
   type        = string
   default     = ""
 }
 variable "storage_project" {
-  description = "The storage project used for the AVI Controller Image. If not set the project variable will be used"
+  description = "The storage project used for the Avi Controller Image. If not set the project variable will be used"
   type        = string
   default     = ""
 }

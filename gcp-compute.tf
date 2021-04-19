@@ -29,11 +29,16 @@ locals {
     dns_service_domain        = var.dns_service_domain
     configure_dns_vs          = var.configure_dns_vs
   }
+  controller_sizes = {
+    small  = "custom-8-24576"
+    medium = "custom-16-32768"
+    large  = "custom-24-49152"
+  }
 }
 resource "google_compute_instance" "avi_controller" {
   count                     = var.controller_ha ? 3 : 1
   name                      = "${var.name_prefix}-avi-controller-${count.index + 1}"
-  machine_type              = var.machine_type
+  machine_type              = var.custom_machine_type == "" ? local.controller_sizes[var.controller_size] : var.custom_machine_type
   zone                      = data.google_compute_zones.available.names[count.index]
   allow_stopping_for_update = "true"
 
