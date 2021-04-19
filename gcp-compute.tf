@@ -1,29 +1,33 @@
 locals {
   # Controller Settings used as Ansible Variables
   cloud_settings = {
-    se_vpc_network_name     = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
-    se_mgmt_subnet_name     = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
-    vpc_project_id          = var.network_project != "" ? var.network_project : var.project
-    controller_version      = var.controller_version
-    region                  = var.region
-    se_project_id           = var.service_engine_project != "" ? var.service_engine_project : var.project
-    se_name_prefix          = var.name_prefix
-    vip_allocation_strategy = var.vip_allocation_strategy
-    zones                   = data.google_compute_zones.available.names
-    controller_ha           = var.controller_ha
-    controller_ip_1         = var.controller_ha ? google_compute_instance.avi_controller[0].network_interface[0].network_ip : null
-    controller_name_1       = var.controller_ha ? google_compute_instance.avi_controller[0].name : null
-    controller_ip_2         = var.controller_ha ? google_compute_instance.avi_controller[1].network_interface[0].network_ip : null
-    controller_name_2       = var.controller_ha ? google_compute_instance.avi_controller[1].name : null
-    controller_ip_3         = var.controller_ha ? google_compute_instance.avi_controller[2].network_interface[0].network_ip : null
-    controller_name_3       = var.controller_ha ? google_compute_instance.avi_controller[2].name : null
-    cloud_router            = var.create_networking ? var.vip_allocation_strategy == "ILB" ? google_compute_router.avi[0].name : null : null
-    configure_ipam_profile  = var.configure_ipam_profile
-    ipam_network_host       = cidrhost(var.ipam_network, 0)
-    ipam_network_netmask    = substr(var.ipam_network, -2, 2)
-    ipam_network_range      = var.ipam_network_range
-    configure_dns_profile   = var.configure_dns_profile
-    dns_service_domain      = var.dns_service_domain
+    se_vpc_network_name       = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
+    se_mgmt_subnet_name       = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
+    controller_public_address = var.controller_public_address
+    vpc_project_id            = var.network_project != "" ? var.network_project : var.project
+    controller_version        = var.controller_version
+    region                    = var.region
+    se_project_id             = var.service_engine_project != "" ? var.service_engine_project : var.project
+    se_name_prefix            = var.name_prefix
+    vip_allocation_strategy   = var.vip_allocation_strategy
+    zones                     = data.google_compute_zones.available.names
+    controller_ha             = var.controller_ha
+    controller_ip_1           = var.controller_ha ? google_compute_instance.avi_controller[0].network_interface[0].network_ip : null
+    controller_name_1         = var.controller_ha ? google_compute_instance.avi_controller[0].name : null
+    controller_ip_2           = var.controller_ha ? google_compute_instance.avi_controller[1].network_interface[0].network_ip : null
+    controller_name_2         = var.controller_ha ? google_compute_instance.avi_controller[1].name : null
+    controller_ip_3           = var.controller_ha ? google_compute_instance.avi_controller[2].network_interface[0].network_ip : null
+    controller_name_3         = var.controller_ha ? google_compute_instance.avi_controller[2].name : null
+    cloud_router              = var.create_networking ? var.vip_allocation_strategy == "ILB" ? google_compute_router.avi[0].name : null : null
+    configure_ipam_profile    = var.configure_ipam_profile
+    ipam_network              = var.ipam_network
+    ipam_network_host         = var.configure_ipam_profile ? cidrhost(var.ipam_network, 0) : null
+    ipam_network_netmask      = var.configure_ipam_profile ? substr(var.ipam_network, -2, 2) : null
+    ipam_net_start            = var.ipam_network_range[0]
+    ipam_net_end              = var.ipam_network_range[1]
+    configure_dns_profile     = var.configure_dns_profile
+    dns_service_domain        = var.dns_service_domain
+    configure_dns_vs          = var.configure_dns_vs
   }
 }
 resource "google_compute_instance" "avi_controller" {

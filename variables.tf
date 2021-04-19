@@ -35,6 +35,11 @@ variable "dns_service_domain" {
   type        = string
   default     = ""
 }
+variable "configure_dns_vs" {
+  description = "Create DNS Virtual Service. The configure_dns_profile and configure_ipam_profile variables must be set to true and their associated configuration variables must also be set"
+  type        = bool
+  default     = "false"
+}
 variable "name_prefix" {
   description = "This prefix is appended to the names of the Controller and SEs"
   type        = string

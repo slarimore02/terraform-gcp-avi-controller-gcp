@@ -84,6 +84,7 @@ output "controller-ip" {
 | avi\_subnet | The CIDR that will be used for creating a subnet in the AVI VPC | `string` | `"10.255.1.0/24"` | no |
 | boot\_disk\_size | The boot disk size for the AVI controller | `number` | `128` | no |
 | configure\_dns\_profile | Configure AVI DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns\_service\_domain variable must also be set | `bool` | `"false"` | no |
+| configure\_dns\_vs | Create DNS Virtual Service. The configure\_dns\_profile and configure\_ipam\_profile variables must be set to true and their associated configuration variables must also be set | `bool` | `"false"` | no |
 | configure\_ipam\_profile | Configure AVI IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice\_network variable must also be set | `bool` | `"false"` | no |
 | controller\_default\_password | This is the default password for the AVI controller image and can be found in the image download page. | `string` | n/a | yes |
 | controller\_ha | If true a HA controller cluster is deployed and configured | `bool` | `"false"` | no |
