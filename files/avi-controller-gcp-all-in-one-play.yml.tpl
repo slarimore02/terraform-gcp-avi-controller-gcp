@@ -5,15 +5,17 @@
   roles:
     - role: avinetworks.avisdk
   vars:
-    controller: "{{ ansible_host }}"
-    username: admin
+    avi_credentials:
+        controller: ${controller_ip_1}
+        username: "admin"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
     cloud_name: "Default-Cloud"
     ansible_become: yes
     ansible_become_password: "{{ password }}"
     vpc_network_name: ${se_vpc_network_name}
     vpc_subnet_name: ${se_mgmt_subnet_name}
     vpc_project_id: ${vpc_project_id}
-    avi_version: ${avi_version}
     region: ${region}
     se_project_id: ${se_project_id}
     se_name_prefix: ${se_name_prefix}
@@ -51,6 +53,8 @@
         sleep: 5
     - name: Configure System Configurations
       avi_systemconfiguration:
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
         email_configuration:
           smtp_type: "SMTP_LOCAL_HOST"
           from_email: admin@avicontroller.net
@@ -86,19 +90,12 @@
           sslprofile_ref: "/api/sslprofile?name=System-Standard-Portal"
           use_uuid_from_input: false
         welcome_workflow_complete: true
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        state: present
-        api_version: "{{ avi_version }}"
+        
 %{ if configure_ipam_profile }
     - name: Create Avi Network Object
       avi_network:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
-        api_version: "{{ avi_version }}"
         name: "network-{{ ipam_network }}"
         dhcp_enabled: false
         configured_subnets:
@@ -139,12 +136,9 @@
 %{ if configure_dns_profile }
     - name: Create Avi DNS Profile
       avi_ipamdnsproviderprofile:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
         name: Avi_DNS
-        api_version: "{{ avi_version }}"
         type: IPAMDNS_TYPE_INTERNAL_DNS
         internal_profile:
           dns_service_domain:
@@ -155,12 +149,9 @@
 %{ endif }
     - name: Configure Cloud
       avi_cloud:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
         name: "{{ cloud_name }}"
-        api_version: "{{ avi_version }}"
         vtype: CLOUD_GCP
         dhcp_enabled: true
         license_type: "LIC_CORES" 
@@ -191,11 +182,8 @@
             %{ endif }
     - name: Set Backup Passphrase
       avi_backupconfiguration:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
-        api_version: "{{ avi_version }}"
         name: Backup-Configuration
         backup_passphrase: "{{ password }}"
         upload_to_remote_host: false
@@ -203,11 +191,8 @@
     - name: Configure SE-Group
       avi_serviceenginegroup:
         name: "Default-Group" 
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
-        api_version: "{{ avi_version }}"
         cloud_ref: "/api/cloud?name={{ cloud_name }}"
         ha_mode: HA_MODE_SHARED_PAIR
         min_scaleout_per_vs: 2
@@ -221,10 +206,7 @@
 %{ if configure_dns_vs }
     - name: Create DNS VSVIP
       avi_api_session:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         http_method: post
         path: "vsvip"
         tenant: "admin"
@@ -264,10 +246,7 @@
 
     - name: Create DNS Virtual Service
       avi_api_session:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         http_method: post
         path: "virtualservice"
         tenant: "admin"
@@ -343,10 +322,7 @@
 
     - name: Add DNS-VS to System Configuration
       avi_systemconfiguration:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         avi_api_update_method: patch
         avi_api_patch_op: add
         tenant: admin
@@ -355,19 +331,13 @@
 %{ if configure_gslb }
     - name: GSLB Config | Verify Cluster UUID
       avi_api_session:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         http_method: get
         path: cluster
       register: cluster
     - name: Create GSLB Config
       avi_gslb:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         name: "GSLB"
         sites:
           - name: "{{ gslb_site_name }}"
@@ -393,12 +363,9 @@
 
     - name: GSLB Config | Verify DNS configuration
       avi_api_session:
-        controller: "${site.ip_address}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         http_method: get
-        path: virtualservice?name=DNS_VS
+        path: virtualservice?name=DNS-VS
       register: dns_vs_verify
 
     - name: Display DNS VS Verify
@@ -407,14 +374,11 @@
 
     - name: GSLB Config | Verify GSLB site configuration
       avi_api_session:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        avi_credentials: "{{ avi_credentials }}"
         http_method: post
         path: gslbsiteops/verify
         data:
-          name: filler_till_api_fixed
+          name: name
           username: admin
           password: "{{ password }}"
           port: 443
@@ -427,30 +391,31 @@
       ansible.builtin.debug:
         var: gslb_verify
 
-    - name: Update Gslb site's configurations (Patch Add Operation)
-      avi_gslb:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
-        api_version: "{{ avi_version }}"
-        avi_api_update_method: patch
-        avi_api_patch_op: add
-        leader_cluster_uuid: "{{ cluster.obj.uuid }}"
-        name: "GSLB"
-        sites:
-          - name: "${site.name}"
-            ip_addr: "${site.ip_address}"
-            dns_vses:
-              - dns_vs_uuid: "{{ dns_vs_verify.obj.uuid }}"
+    - name: Add GSLB Sites
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: patch
+        path: "gslb/{{ gslb_results.obj.uuid }}"
+        tenant: "admin"
+        data:
+          add:
+            sites:
+              - name: "${site.name}"
+                member_type: "GSLB_ACTIVE_MEMBER"
+                username: "{{ username }}"
+                password: "{{ password }}"
+                cluster_uuid: "{{ gslb_verify.obj.rx_uuid }}"
+                ip_addresses:
+                  - type: "V4"
+                    addr: "${site.ip_address}"
+                dns_vses:
+                  - dns_vs_uuid: "{{ dns_vs_verify.obj.results.0.uuid }}"
   %{ endfor }%{ endif }
 %{ if controller_ha }
     - name: Controller Cluster Configuration
       avi_cluster:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
-        api_version: "{{ avi_version }}"
         #virtual_ip:
         #  type: V4
         #  addr: "{{ controller_cluster_vip }}"
