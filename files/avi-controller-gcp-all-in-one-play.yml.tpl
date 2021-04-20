@@ -421,7 +421,10 @@
 
     - name: Update Gslb site's configurations (Patch Add Operation)
       avi_gslb:
-        avi_credentials: "{{ avi_credentials }}"
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
         avi_api_update_method: patch
         avi_api_patch_op: add
         leader_cluster_uuid: "{{ controller.obj.uuid }}"
