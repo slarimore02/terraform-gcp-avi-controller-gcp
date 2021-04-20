@@ -401,6 +401,10 @@
         path: virtualservice?name=DNS_VS
       register: dns_vs_verify
 
+    - name: Display DNS VS Verify
+      ansible.builtin.debug:
+        var: dns_vs_verify
+
     - name: GSLB Config | Verify GSLB site configuration
       avi_api_session:
         controller: "{{ controller }}"
@@ -418,6 +422,10 @@
             - type: "V4"
               addr: "${site.ip_address}"
       register: gslb_verify
+      
+    - name: Display GSLB Siteops Verify
+      ansible.builtin.debug:
+        var: gslb_verify
 
     - name: Update Gslb site's configurations (Patch Add Operation)
       avi_gslb:
@@ -427,7 +435,7 @@
         api_version: "{{ avi_version }}"
         avi_api_update_method: patch
         avi_api_patch_op: add
-        leader_cluster_uuid: "{{ controller.obj.uuid }}"
+        leader_cluster_uuid: "{{ cluster.obj.uuid }}"
         name: "GSLB"
         sites:
           - name: "${site.name}"
