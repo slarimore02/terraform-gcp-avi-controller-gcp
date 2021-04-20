@@ -29,9 +29,12 @@
   %{ if configure_dns_profile }
     dns_service_domain: ${dns_service_domain}
   %{ endif }
+  %{ if configure_gslb }
+    gslb_site_name: ${gslb_site_name}
+  %{ endif }
+    controller_ip_1: ${controller_ip_1}
   %{ if controller_ha }
     controller_name_1: ${controller_name_1}
-    controller_ip_1: ${controller_ip_1}
     controller_name_2: ${controller_name_2}
     controller_ip_2: ${controller_ip_2}
     controller_name_3: ${controller_name_3}
@@ -349,6 +352,86 @@
         tenant: admin
         dns_virtualservice_refs: "{{ dns_vs.obj.url }}"
 %{ endif}
+%{ if configure_gslb }
+    - name: GSLB Config | Verify Cluster UUID
+      avi_api_session:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
+        http_method: get
+        path: cluster
+      register: cluster
+    - name: Create GSLB Config
+      avi_gslb:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
+        name: "GSLB"
+        sites:
+          - name: "{{ gslb_site_name }}"
+            username: "{{ username }}"
+            password: "{{ password }}"
+            ip_addresses:
+              - type: "V4"
+                addr: "{{ controller_ip_1 }}"
+            enabled: True
+            member_type: "GSLB_ACTIVE_MEMBER"
+            port: 443
+            dns_vses:
+              - dns_vs_uuid: "{{ dns_vs.obj.uuid }}"
+            cluster_uuid: "{{ cluster.obj.uuid }}"
+        dns_configs:
+          %{ for domain in gslb_domains }
+          - domain_name: "${domain}"
+          %{ endfor }
+        leader_cluster_uuid: "{{ cluster.obj.uuid }}"
+      register: gslb_results
+  %{ endif }
+  %{ if configure_gslb_additional_sites }%{ for site in additional_gslb_sites }
+
+    - name: GSLB Config | Verify DNS configuration
+      avi_api_session:
+        controller: "${site.ip_address}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
+        http_method: get
+        path: virtualservice?name=DNS_VS
+      register: dns_vs_verify
+
+    - name: GSLB Config | Verify GSLB site configuration
+      avi_api_session:
+        controller: "{{ controller }}"
+        username: "{{ username }}"
+        password: "{{ password }}"
+        api_version: "{{ avi_version }}"
+        http_method: post
+        path: gslbsiteops/verify
+        data:
+          name: filler_till_api_fixed
+          username: admin
+          password: "{{ password }}"
+          port: 443
+          ip_addresses:
+            - type: "V4"
+              addr: "${site.ip_address}"
+      register: gslb_verify
+
+    - name: Update Gslb site's configurations (Patch Add Operation)
+      avi_gslb:
+        avi_credentials: "{{ avi_credentials }}"
+        avi_api_update_method: patch
+        avi_api_patch_op: add
+        leader_cluster_uuid: "{{ controller.obj.uuid }}"
+        name: "GSLB"
+        sites:
+          - name: "${site.name}"
+            ip_addr: "${site.ip_address}"
+            dns_vses:
+              - dns_vs_uuid: "{{ dns_vs_verify.obj.uuid }}"
+  %{ endfor }%{ endif }
 %{ if controller_ha }
     - name: Controller Cluster Configuration
       avi_cluster:

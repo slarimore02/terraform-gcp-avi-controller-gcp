@@ -49,6 +49,31 @@ variable "configure_dns_vs" {
   type        = bool
   default     = "false"
 }
+variable "configure_gslb" {
+  description = "Configure GSLB. The gslb_site_name, gslb_domains, and configure_dns_vs variables must also be set. Optionally the additional_gslb_sites variable can be used to add active GSLB sites"
+  type        = bool
+  default     = "false"
+}
+variable "gslb_site_name" {
+  description = "The name of the GSLB site the deployed Controller(s) will be a member of."
+  type        = string
+  default     = ""
+}
+variable "gslb_domains" {
+  description = "A list of GSLB domains that will be configured"
+  type        = list(string)
+  default     = [""]
+}
+variable "configure_gslb_additional_sites" {
+  description = "Configure Additional GSLB Sites. The additional_gslb_sites, gslb_site_name, gslb_domains, and configure_dns_vs variables must also be set. Optionally the additional_gslb_sites variable can be used to add active GSLB sites"
+  type        = bool
+  default     = "false"
+}
+variable "additional_gslb_sites" {
+  description = "The Names and IP addresses of the GSLB Sites that will be configured."
+  type        = list(object({ name = string, ip_address = string, dns_vs_name = string }))
+  default     = [{ name = "", ip_address = "", dns_vs_name = "" }]
+}
 variable "name_prefix" {
   description = "This prefix is appended to the names of the Controller and SEs"
   type        = string
