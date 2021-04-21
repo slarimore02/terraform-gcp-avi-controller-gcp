@@ -8,7 +8,7 @@ resource "google_compute_firewall" "avi_controller_mgmt" {
     ports    = ["22", "443", "5054"]
   }
 
-  source_ranges = ["0.0.0.0/0"]
+  source_ranges = [var.firewall_controller_allow_source_range]
   target_tags   = ["avi-controller"]
   depends_on    = [google_compute_network.vpc_network]
 }
@@ -83,7 +83,6 @@ resource "google_compute_firewall" "avi_se_data" {
       ports    = [allow.value["port"]]
     }
   }
-
   source_ranges = [var.firewall_se_data_source_range]
   target_tags   = ["avi-se"]
   depends_on    = [google_compute_network.vpc_network]

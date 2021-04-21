@@ -209,7 +209,12 @@ variable "firewall_se_data_rules" {
   default     = [{ protocol = "tcp", port = "443" }, { protocol = "udp", port = "53" }]
 }
 variable "firewall_se_data_source_range" {
-  description = "The backend server GCP Project. If not set the project variable will be used"
+  description = "The IP range allowed to access Virtual Services hosted on Service Engines. Access from all IP ranges will be allowed by default"
+  type        = string
+  default     = "0.0.0.0/0"
+}
+variable "firewall_controller_allow_source_range" {
+  description = "The IP range allowed to connect to the Avi Controller. Access from all IP ranges will be allowed by default"
   type        = string
   default     = "0.0.0.0/0"
 }
