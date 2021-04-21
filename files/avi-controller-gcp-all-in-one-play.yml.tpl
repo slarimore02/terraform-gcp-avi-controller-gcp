@@ -119,12 +119,9 @@
 
     - name: Create Avi IPAM Profile
       avi_ipamdnsproviderprofile:
-        controller: "{{ controller }}"
-        username: "{{ username }}"
-        password: "{{ password }}"
+        avi_credentials: "{{ avi_credentials }}"
         state: present
         name: Avi_IPAM
-        api_version: "{{ avi_version }}"
         type: IPAMDNS_TYPE_INTERNAL
         internal_profile:
           ttl: 30
