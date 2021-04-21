@@ -10,6 +10,8 @@
         username: "admin"
         password: "{{ password }}"
         api_version: ${avi_version}
+    username: "admin"
+    password: "{{ password }}"
     cloud_name: "Default-Cloud"
     ansible_become: yes
     ansible_become_password: "{{ password }}"
