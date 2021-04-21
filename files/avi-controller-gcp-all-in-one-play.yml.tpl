@@ -12,6 +12,7 @@
         api_version: ${avi_version}
     username: "admin"
     password: "{{ password }}"
+    api_version: ${avi_version}
     cloud_name: "Default-Cloud"
     ansible_become: yes
     ansible_become_password: "{{ password }}"
@@ -362,7 +363,10 @@
 
     - name: GSLB Config | Verify DNS configuration
       avi_api_session:
-        avi_credentials: "{{ avi_credentials }}"
+        controller: "${site.ip_address}"
+        username: "admin"
+        password: "{{ password }}"
+        api_version: ${avi_version}
         http_method: get
         path: virtualservice?name=DNS-VS
       register: dns_vs_verify
