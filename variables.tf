@@ -198,3 +198,18 @@ variable "server_project" {
   type        = string
   default     = ""
 }
+variable "configure_firewall_se_data" {
+  description = "Configure Firewall rules for SE dataplane traffic. If set the firewall_se_data_rules and firewall_se_data_source_range must be set"
+  type        = bool
+  default     = "false"
+}
+variable "firewall_se_data_rules" {
+  description = "The backend server GCP Project. If not set the project variable will be used"
+  type        = list(map(string))
+  default     = [{ protocol = "tcp", port = "443" }, { protocol = "udp", port = "53" }]
+}
+variable "firewall_se_data_source_range" {
+  description = "The backend server GCP Project. If not set the project variable will be used"
+  type        = string
+  default     = "0.0.0.0/0"
+}

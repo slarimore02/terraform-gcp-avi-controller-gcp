@@ -175,6 +175,7 @@ https://avinetworks.com/docs/latest/system-limits/
 | boot\_disk\_size | The boot disk size for the Avi controller | `number` | `128` | no |
 | configure\_dns\_profile | Configure Avi DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns\_service\_domain variable must also be set | `bool` | `"false"` | no |
 | configure\_dns\_vs | Create DNS Virtual Service. The configure\_dns\_profile and configure\_ipam\_profile variables must be set to true and their associated configuration variables must also be set | `bool` | `"false"` | no |
+| configure\_firewall\_se\_data | Configure Firewall rules for SE dataplane traffic. If set the firewall\_se\_data\_rules and firewall\_se\_data\_source\_range must be set | `bool` | `"false"` | no |
 | configure\_gslb | Configure GSLB. The gslb\_site\_name, gslb\_domains, and configure\_dns\_vs variables must also be set. Optionally the additional\_gslb\_sites variable can be used to add active GSLB sites | `bool` | `"false"` | no |
 | configure\_gslb\_additional\_sites | Configure Additional GSLB Sites. The additional\_gslb\_sites, gslb\_site\_name, gslb\_domains, and configure\_dns\_vs variables must also be set. Optionally the additional\_gslb\_sites variable can be used to add active GSLB sites | `bool` | `"false"` | no |
 | configure\_ipam\_profile | Configure Avi IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice\_network variable must also be set | `bool` | `"false"` | no |
@@ -191,6 +192,8 @@ https://avinetworks.com/docs/latest/system-limits/
 | custom\_subnetwork\_name | This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create\_networking variable must also be set to false for this network to be used. | `string` | `null` | no |
 | custom\_vpc\_name | This field can be used to specify an existing VPC for the controller and SEs. The create\_networking variable must also be set to false for this network to be used. | `string` | `null` | no |
 | dns\_service\_domain | The DNS Domain that will be available for Virtual Services. Avi will be the Authorative Nameserver for this domain and NS records may need to be created pointing to the Avi Service Engine addresses. An example is demo.Avi.com | `string` | `""` | no |
+| firewall\_se\_data\_rules | The backend server GCP Project. If not set the project variable will be used | `list(map(string))` | <pre>[<br>  {<br>    "port": "443",<br>    "protocol": "tcp"<br>  },<br>  {<br>    "port": "53",<br>    "protocol": "udp"<br>  }<br>]</pre> | no |
+| firewall\_se\_data\_source\_range | The backend server GCP Project. If not set the project variable will be used | `string` | `"0.0.0.0/0"` | no |
 | gslb\_domains | A list of GSLB domains that will be configured | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | gslb\_site\_name | The name of the GSLB site the deployed Controller(s) will be a member of. | `string` | `""` | no |
 | ipam\_network | The Avi Network object created for Virtual Services. This CIDR should be unique to Avi and not overlap with a VPC CIDR. The vs\_network\_range variable must also be set. An example is 192.168.1.0/24 | `string` | `""` | no |
