@@ -66,6 +66,74 @@ output "controller_address" {
   value = module.avi_controller_gcp.controller_address
 } 
 ```
+## GSLB Deployment Example
+```hcl
+terraform {
+  backend "local" {
+  }
+}
+module "avi_controller_east" {
+  source  = "slarimore02/avi-controller-gcp/gcp"
+  version = "1.0.x"
+
+  region = "us-east1"
+  create_networking = "false"
+  custom_vpc_name             = "vpc"
+  custom_subnetwork_name      = "subnet-east-1"
+  create_iam = "false"
+  avi_version = "20.1.5"
+  controller_public_address = "true"
+  service_account_email = "<email>@<account>.iam.gserviceaccount.com"
+  controller_ha = "true"
+  controller_default_password = "<default-password>"
+  controller_image_gs_path = "<bucket>/gcp_controller-20.1.5.tar.gz"
+  controller_password = "<new-password>"
+  name_prefix = "east1"
+  project = "<project>"
+  configure_ipam_profile          = "true"
+  ipam_network                    = "192.168.252.0/24"
+  ipam_network_range              = ["192.168.252.10", "192.168.252.100"]
+  configure_dns_profile           = "true"
+  dns_service_domain              = "east.domain"
+  configure_dns_vs                = "true"
+}
+module "avi_controller_west" {
+  source  = "slarimore02/avi-controller-gcp/gcp"
+  version = "1.0.x"
+
+  region = "us-west1"
+  create_networking = "false"
+  custom_vpc_name             = "vpc"
+  custom_subnetwork_name      = "subnet-west-1"
+  create_iam = "false"
+  avi_version = "20.1.5"
+  controller_public_address = "true"
+  service_account_email = "<email>@<project>.iam.gserviceaccount.com"
+  controller_ha = "true"
+  controller_default_password = "<default-password>"
+  controller_image_gs_path = "<bucket>/gcp_controller-20.1.5.tar.gz"
+  controller_password = "<new-password>"
+  name_prefix = "west1"
+  project = "<project>"
+  configure_ipam_profile          = "true"
+  ipam_network                    = "192.168.251.0/24"
+  ipam_network_range              = ["192.168.251.10", "192.168.251.100"]
+  configure_dns_profile           = "true"
+  dns_service_domain              = "west.domain"
+  configure_dns_vs                = "true"
+  configure_gslb                  = "true"
+  gslb_site_name                  = "West1"
+  gslb_domains                    = ["gslb.domain"]
+  configure_gslb_additional_sites = "true"
+  additional_gslb_sites           = [{name = "East1", ip_address = module.avi_controller_east.controller_address[0] , dns_vs_name = "DNS-VS"}]
+}
+output "west_controller_ip" { 
+  value = module.avi_controller_west.controller_address
+}
+output "east_controller_ip" { 
+  value = module.avi_controller_east.controller_address
+}
+```
 ## Controller Sizing
 The controller_size variable can be used to determine the vCPU and Memory resources allocated to the Avi Controller. There are 3 available sizes for the Controller as documented below:
 

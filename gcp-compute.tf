@@ -46,16 +46,14 @@ resource "google_compute_instance" "avi_controller" {
   machine_type              = var.custom_machine_type == "" ? local.controller_sizes[var.controller_size] : var.custom_machine_type
   zone                      = data.google_compute_zones.available.names[count.index]
   allow_stopping_for_update = "true"
-
-  tags = ["avi-controller"]
-
+  can_ip_forward            = "true"
+  tags                      = ["avi-controller"]
   boot_disk {
     initialize_params {
       image = google_compute_image.controller.name
       size  = var.boot_disk_size
     }
   }
-
   network_interface {
     subnetwork         = var.create_networking ? google_compute_subnetwork.avi[0].name : var.custom_subnetwork_name
     subnetwork_project = var.network_project == "" ? null : var.network_project
@@ -79,7 +77,6 @@ resource "null_resource" "ansible_provisioner" {
   triggers = {
     controller_instance_ids = join(",", google_compute_instance.avi_controller.*.name)
   }
-
   connection {
     type     = "ssh"
     host     = var.controller_public_address ? google_compute_instance.avi_controller[0].network_interface[0].access_config[0].nat_ip : google_compute_instance.avi_controller[0].network_interface[0].network_ip
@@ -87,7 +84,6 @@ resource "null_resource" "ansible_provisioner" {
     timeout  = "600s"
     password = var.controller_password
   }
-
   provisioner "file" {
     content = templatefile("${path.module}/files/avi-controller-gcp-all-in-one-play.yml.tpl",
     local.cloud_settings)
