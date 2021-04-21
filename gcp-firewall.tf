@@ -80,7 +80,7 @@ resource "google_compute_firewall" "avi_se_data" {
     for_each = var.firewall_se_data_rules
     content {
       protocol = allow.value["protocol"]
-      ports    = [allow.value["port"]]
+      ports    = allow.value["port"]
     }
   }
   source_ranges = [var.firewall_se_data_source_range]

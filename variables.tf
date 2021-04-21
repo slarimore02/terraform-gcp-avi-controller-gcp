@@ -205,8 +205,8 @@ variable "configure_firewall_se_data" {
 }
 variable "firewall_se_data_rules" {
   description = "The ports allowed for Virtual Services hosted on Services Engines. The configure_firewall_se_data variable must be set to true for this rule to be created"
-  type        = list(map(string))
-  default     = [{ protocol = "tcp", port = "443" }, { protocol = "udp", port = "53" }]
+  type        = list(object({ protocol = string, port = list(string) }))
+  default     = [{ protocol = "tcp", port = ["443", "53"] }, { protocol = "udp", port = ["53"] }]
 }
 variable "firewall_se_data_source_range" {
   description = "The IP range allowed to access Virtual Services hosted on Service Engines. The configure_firewall_se_data and firewall_se_data_rules variables must also be set"
