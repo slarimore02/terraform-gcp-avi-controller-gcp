@@ -1,8 +1,10 @@
-output "controller_address" {
-  description = "The IP Address(es) of the AVI Controller(s)"
-  value       = [for s in google_compute_instance.avi_controller : s.network_interface[0].network_ip]
-}
-output "public_controller_address" {
-  description = "The IP Address(es) of the AVI Controller(s)"
-  value       = var.controller_public_address ? [for s in google_compute_instance.avi_controller : s.network_interface[0].access_config[0].nat_ip] : null
+output "controllers" {
+  description = "The AVI Controller(s) Information"
+  value = ([for s in google_compute_instance.avi_controller : merge(
+    { "name" = s.name },
+    { "private_ip_address" = s.network_interface[0].network_ip },
+    var.controller_public_address ? { "public_ip_address" = s.network_interface[0].access_config[0].nat_ip } : {}
+    )
+    ]
+  )
 }

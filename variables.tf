@@ -154,6 +154,20 @@ variable "boot_disk_size" {
     error_message = "The Controller boot disk size should be greater than or equal to 128 GB."
   }
 }
+variable "se_size" {
+  description = "The CPU, Memory, Disk Size of the Service Engines. The default is 1 vCPU, 2 GB RAM, and a 15 GB Disk per Service Engine. Syntax [\"cpu_cores\", \"memory_in_GB\", \"disk_size_in_GB\"]"
+  type        = list(string)
+  default     = ["1", "2", "15"]
+}
+variable "se_ha_mode" {
+  description = "The HA mode of the Service Engine Group. Possible values active/active, n+m, or active/standby"
+  type        = string
+  default     = "active/active"
+  validation {
+    condition     = contains(["active/active", "n+m", "active/standby"], var.se_ha_mode)
+    error_message = "Acceptable values are active/active, n+m, or active/standby."
+  }
+}
 variable "vip_allocation_strategy" {
   description = "The VIP allocation strategy for the GCP Cloud - ROUTES or ILB"
   type        = string

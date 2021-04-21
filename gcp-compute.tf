@@ -9,6 +9,9 @@ locals {
     region                          = var.region
     se_project_id                   = var.service_engine_project != "" ? var.service_engine_project : var.project
     se_name_prefix                  = var.name_prefix
+    se_cpu                          = var.se_size[0]
+    se_memory                       = var.se_size[1]
+    se_disk                         = var.se_size[2]
     vip_allocation_strategy         = var.vip_allocation_strategy
     zones                           = data.google_compute_zones.available.names
     controller_ha                   = var.controller_ha
@@ -33,6 +36,7 @@ locals {
     gslb_site_name                  = var.gslb_site_name
     gslb_domains                    = var.gslb_domains
     additional_gslb_sites           = var.additional_gslb_sites
+    se_ha_mode                      = var.se_ha_mode
   }
   controller_sizes = {
     small  = "custom-8-24576"

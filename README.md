@@ -199,6 +199,8 @@ https://avinetworks.com/docs/latest/system-limits/
 | network\_project | The GCP Network project that the Controller and SEs will use. If not set the project variable will be used | `string` | `""` | no |
 | project | The project used for the Avi Controller | `string` | n/a | yes |
 | region | The Region that the Avi controller and SEs will be deployed to | `string` | n/a | yes |
+| se\_ha\_mode | The HA mode of the Service Engine Group. Possible values active/active, n+m, or active/standby | `string` | `"active/active"` | no |
+| se\_size | The CPU, Memory, Disk Size of the Service Engines. The default is 1 vCPU, 2 GB RAM, and a 15 GB Disk per Service Engine. Syntax ["cpu\_cores", "memory\_in\_GB", "disk\_size\_in\_GB"] | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "15"<br>]</pre> | no |
 | server\_project | The backend server GCP Project. If not set the project variable will be used | `string` | `""` | no |
 | service\_account\_email | This is the service account that will be leveraged by the Avi Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA | `string` | n/a | yes |
 | service\_engine\_project | The project used for Avi Service Engines. If not set the project variable will be used | `string` | `""` | no |
@@ -209,7 +211,6 @@ https://avinetworks.com/docs/latest/system-limits/
 
 | Name | Description |
 |------|-------------|
-| controller\_address | The IP Address(es) of the AVI Controller(s) |
-| public\_controller\_address | The IP Address(es) of the AVI Controller(s) |
+| controllers | The AVI Controller(s) Information |
 
 <!-- END OF PRE-COMMIT-TERRAFORM DOCS HOOK -->

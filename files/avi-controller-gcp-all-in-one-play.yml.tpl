@@ -22,6 +22,10 @@
     region: ${region}
     se_project_id: ${se_project_id}
     se_name_prefix: ${se_name_prefix}
+    se_cpu: ${se_cpu}
+    se_memory: ${se_memory}
+    se_disk: ${se_disk}
+    se_ha_mode: ${se_ha_mode}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
   %{ if configure_ipam_profile }
@@ -184,7 +188,7 @@
         name: Backup-Configuration
         backup_passphrase: "{{ password }}"
         upload_to_remote_host: false
-
+%{ if se_ha_mode == "active/active" }
     - name: Configure SE-Group
       avi_api_session:
         avi_credentials: "{{ avi_credentials }}"
@@ -202,10 +206,62 @@
           buffer_se: "0"
           max_se: "10"
           se_name_prefix: "{{ se_name_prefix }}"
+          vcpus_per_se: "{{ se_cpu }}"
+          memory_per_se: "{{ se_memory * 1024 }}"
+          disk_per_se: "{{ se_disk }}"
           realtime_se_metrics:
             duration: "10080"
             enabled: true
-        
+%{ endif }
+%{ if se_ha_mode == "n+m" }
+    - name: Configure SE-Group
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: post
+        path: "serviceenginegroup"
+        tenant: "admin"
+        data:
+          name: "Default-Group" 
+          avi_credentials: "{{ avi_credentials }}"
+          state: present
+          cloud_ref: "{{ avi_cloud.obj.url }}"
+          ha_mode: HA_MODE_SHARED
+          min_scaleout_per_vs: 1
+          algo: PLACEMENT_ALGO_PACKED
+          buffer_se: "1"
+          max_se: "10"
+          se_name_prefix: "{{ se_name_prefix }}"
+          vcpus_per_se: "{{ se_cpu }}"
+          memory_per_se: "{{ se_memory * 1024 }}"
+          disk_per_se: "{{ se_disk }}"
+          realtime_se_metrics:
+            duration: "10080"
+            enabled: true
+%{ endif }
+%{ if se_ha_mode == "active/standby" }
+    - name: Configure SE-Group
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: post
+        path: "serviceenginegroup"
+        tenant: "admin"
+        data:
+          name: "Default-Group" 
+          avi_credentials: "{{ avi_credentials }}"
+          state: present
+          cloud_ref: "{{ avi_cloud.obj.url }}"
+          ha_mode: HA_MODE_LEGACY_ACTIVE_STANDBY
+          min_scaleout_per_vs: 1
+          buffer_se: "0"
+          max_se: "2"
+          se_name_prefix: "{{ se_name_prefix }}"
+          vcpus_per_se: "{{ se_cpu }}"
+          memory_per_se: "{{ se_memory * 1024 }}"
+          disk_per_se: "{{ se_disk }}"
+          realtime_se_metrics:
+            duration: "10080"
+            enabled: true
+%{ endif }
 %{ if configure_gslb }
     - name: Configure GSLB SE-Group
       avi_api_session:
