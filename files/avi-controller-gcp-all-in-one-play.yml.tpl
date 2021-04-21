@@ -9,7 +9,7 @@
         controller: ${controller_ip_1}
         username: "admin"
         password: "{{ password }}"
-        api_version: "{{ avi_version }}"
+        api_version: ${avi_version}
     cloud_name: "Default-Cloud"
     ansible_become: yes
     ansible_become_password: "{{ password }}"
