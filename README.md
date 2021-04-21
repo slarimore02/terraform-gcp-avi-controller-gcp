@@ -125,13 +125,13 @@ module "avi_controller_west" {
   gslb_site_name                  = "West1"
   gslb_domains                    = ["gslb.domain"]
   configure_gslb_additional_sites = "true"
-  additional_gslb_sites           = [{name = "East1", ip_address = module.avi_controller_east.controller_address[0] , dns_vs_name = "DNS-VS"}]
+  additional_gslb_sites           = [{name = "East1", ip_address = module.avi_controller_east.controllers[0].private_ip_address , dns_vs_name = "DNS-VS"}]
 }
 output "west_controller_ip" { 
-  value = module.avi_controller_west.controller_address
+  value = module.avi_controller_west.controllers
 }
 output "east_controller_ip" { 
-  value = module.avi_controller_east.controller_address
+  value = module.avi_controller_east.controllers
 }
 ```
 ## Controller Sizing
