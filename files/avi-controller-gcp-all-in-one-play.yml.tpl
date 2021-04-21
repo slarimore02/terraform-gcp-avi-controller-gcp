@@ -87,10 +87,6 @@
           enable_https: true
           password_strength_check: true
           redirect_to_https: true
-          sslkeyandcertificate_refs:
-            - "/api/sslkeyandcertificate?name=System-Default-Portal-Cert"
-            - "/api/sslkeyandcertificate?name=System-Default-Portal-Cert-EC256"
-          sslprofile_ref: "/api/sslprofile?name=System-Standard-Portal"
           use_uuid_from_input: false
         welcome_workflow_complete: true
         
@@ -180,6 +176,7 @@
               cloud_router_names:
                 - "{{ cloud_router }}"
             %{ endif }
+      register: avi_cloud
     - name: Set Backup Passphrase
       avi_backupconfiguration:
         avi_credentials: "{{ avi_credentials }}"
@@ -193,7 +190,7 @@
         name: "Default-Group" 
         avi_credentials: "{{ avi_credentials }}"
         state: present
-        cloud_ref: "/api/cloud?name={{ cloud_name }}"
+        cloud_ref: "{{ avi_cloud.obj.url }}"
         ha_mode: HA_MODE_SHARED_PAIR
         min_scaleout_per_vs: 2
         algo: PLACEMENT_ALGO_DISTRIBUTED
@@ -203,6 +200,26 @@
         realtime_se_metrics:
           duration: "10080"
           enabled: true
+%{ if configure_gslb }
+    - name: Configure GSLB DNS SE-Group
+      avi_serviceenginegroup:
+        name: "g-dns" 
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
+        cloud_ref: "{{ avi_cloud.obj.url }}"
+        ha_mode: HA_MODE_SHARED
+        algo: PLACEMENT_ALGO_PACKED
+        buffer_se: "1"
+        per_app: true
+        max_se: "4"
+        max_vs_per_se: "2"
+        extra_shared_config_memory: 2000
+        se_name_prefix: "{{ se_name_prefix }}"
+        realtime_se_metrics:
+          duration: "10080"
+          enabled: true
+      register: gslb_se_group
+%{ endif}
 %{ if configure_dns_vs }
     - name: Create DNS VSVIP
       avi_api_session:
@@ -212,7 +229,10 @@
         tenant: "admin"
         data:
           east_west_placement: false
-          cloud_ref: /api/cloud?name=Default-Cloud
+          cloud_ref: "{{ avi_cloud.obj.url }}"
+          %{ if configure_gslb }
+          "se_group_ref": "{{ gslb_se_group.obj.url }}"
+          %{ endif}
           vip:
           - enabled: true
             auto_allocate_ip: true
@@ -300,7 +320,10 @@
           application_profile_ref: /api/applicationprofile?name=System-DNS
           network_profile_ref: /api/networkprofile?name=System-UDP-Per-Pkt
           analytics_profile_ref: /api/analyticsprofile?name=System-Analytics-Profile
-          cloud_ref: /api/cloud?name=Default-Cloud
+          %{ if configure_gslb }
+          "se_group_ref": "{{ gslb_se_group.obj.url }}"
+          %{ endif}
+          cloud_ref: "{{ avi_cloud.obj.url }}"
           services:
           - port: 53
             port_range_end: 53
