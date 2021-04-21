@@ -46,7 +46,6 @@ resource "google_compute_instance" "avi_controller" {
   machine_type              = var.custom_machine_type == "" ? local.controller_sizes[var.controller_size] : var.custom_machine_type
   zone                      = data.google_compute_zones.available.names[count.index]
   allow_stopping_for_update = "true"
-  can_ip_forward            = "true"
   tags                      = ["avi-controller"]
   boot_disk {
     initialize_params {
