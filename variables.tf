@@ -218,3 +218,24 @@ variable "firewall_controller_allow_source_range" {
   type        = string
   default     = "0.0.0.0/0"
 }
+variable "dns_servers" {
+  description = "The optional DNS servers that will be used for local DNS resolution by the controller"
+  type        = list(string)
+  default     = [""]
+}
+variable "dns_search_domain" {
+  description = "The optional DNS search domain that will be used by the controller"
+  type        = string
+  default     = ""
+}
+variable "ntp_servers" {
+  description = "The NTP Servers that the Avi Controllers will use. The server should be a valid IP address (v4 or v6) or a DNS name. Valid options for type are V4, DNS, or V6"
+  type        = list(object({ server = string, type = string }))
+  default     = [{ server = "0.us.pool.ntp.org", type = "DNS" }, { server = "1.us.pool.ntp.org", type = "DNS" }, { server = "2.us.pool.ntp.org", type = "DNS" }, { server = "3.us.pool.ntp.org", type = "DNS" }]
+}
+variable "email_config" {
+  description = "The Email settings that will be used for sending password reset information or for trigged alerts. The default setting will send emails directly from the Avi Controller"
+  sensitive   = true
+  type        = object({ smtp_type = string, from_email = string, mail_server_name = string, mail_server_port = string, auth_username = string, auth_password = string })
+  default     = { smtp_type = "SMTP_LOCAL_HOST", from_email = "admin@avicontroller.net", mail_server_name = "localhost", mail_server_port = "25", auth_username = "", auth_password = "" }
+}

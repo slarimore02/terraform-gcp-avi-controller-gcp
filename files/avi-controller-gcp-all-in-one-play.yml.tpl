@@ -14,6 +14,7 @@
     password: "{{ password }}"
     api_version: ${avi_version}
     cloud_name: "Default-Cloud"
+    dns_search_domain: ${dns_search_domain}
     ansible_become: yes
     ansible_become_password: "{{ password }}"
     vpc_network_name: ${se_vpc_network_name}
@@ -69,20 +70,20 @@
           se_in_provider_context: true
           tenant_access_to_provider_se: true
           tenant_vrf: false
+        dns_configuration:
+          server_list:
+          %{ for server in dns_servers }
+          - addr: ${server}
+            type: V4
+          %{ endfor }
+          search_domain: "{{ dns_search_domain }}"
         ntp_configuration:
           ntp_server_list:
-            - "0.us.pool.ntp.org":
-              addr: "0.us.pool.ntp.org"
-              type: DNS
-            - "1.us.pool.ntp.org":
-              addr: "1.us.pool.ntp.org"
-              type: DNS
-            - "2.us.pool.ntp.org":
-              addr: "2.us.pool.ntp.org"
-              type: DNS
-            - "3.us.pool.ntp.org":
-              addr: "3.us.pool.ntp.org"
-              type: DNS
+            %{ for item in ntp_servers }
+            - "${item.server}":
+              addr: "${item.server}"
+              type: ${item.type}
+            %{ endfor }
         portal_configuration:
           allow_basic_authentication: false
           disable_remote_cli_shell: false

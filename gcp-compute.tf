@@ -6,6 +6,10 @@ locals {
     controller_public_address       = var.controller_public_address
     vpc_project_id                  = var.network_project != "" ? var.network_project : var.project
     avi_version                     = var.avi_version
+    dns_servers                     = var.dns_servers
+    dns_search_domain               = var.dns_search_domain
+    ntp_servers                     = var.ntp_servers
+    email_config                    = var.email_config
     region                          = var.region
     se_project_id                   = var.service_engine_project != "" ? var.service_engine_project : var.project
     se_name_prefix                  = var.name_prefix
