@@ -26,8 +26,8 @@ locals {
     ipam_network                    = var.ipam_network
     ipam_network_host               = var.configure_ipam_profile ? cidrhost(var.ipam_network, 0) : null
     ipam_network_netmask            = var.configure_ipam_profile ? substr(var.ipam_network, -2, 2) : null
-    ipam_net_start                  = var.ipam_network_range[0]
-    ipam_net_end                    = var.ipam_network_range[1]
+    ipam_net_start                  = var.configure_ipam_profile ? var.ipam_network_range[0] : null
+    ipam_net_end                    = var.configure_ipam_profile ? var.ipam_network_range[1] : null
     configure_dns_profile           = var.configure_dns_profile
     dns_service_domain              = var.dns_service_domain
     configure_dns_vs                = var.configure_dns_vs
@@ -65,7 +65,6 @@ resource "google_compute_instance" "avi_controller" {
       content {}
     }
   }
-
   service_account {
     email  = data.google_service_account.avi.email
     scopes = ["cloud-platform"]
