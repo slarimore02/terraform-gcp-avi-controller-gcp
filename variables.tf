@@ -24,15 +24,10 @@ variable "configure_ipam_profile" {
   type        = bool
   default     = "false"
 }
-variable "ipam_network" {
-  description = "The Avi Network object created for Virtual Services. This CIDR should be unique to Avi and not overlap with a VPC CIDR. The vs_network_range variable must also be set. An example is 192.168.1.0/24"
-  type        = string
-  default     = ""
-}
-variable "ipam_network_range" {
-  description = "A list of with the Network IP range for Virtual Services. An example is [\"192.168.1.10\", \"192.168.1.30\"]"
-  type        = list(string)
-  default     = [""]
+variable "ipam_networks" {
+  description = "This variable configures the IPAM network(s). Example: { network = \"192.168.20.0/24\" , static_pool = [\"192.168.1.10\",\"192.168.1.30\"]}"
+  type        = list(object({ network = string, static_pool = list(string) }))
+  default     = [{ network = "", static_pool = [""] }]
 }
 variable "configure_dns_profile" {
   description = "Configure Avi DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns_service_domain variable must also be set"
@@ -48,6 +43,11 @@ variable "configure_dns_vs" {
   description = "Create DNS Virtual Service. The configure_dns_profile and configure_ipam_profile variables must be set to true and their associated configuration variables must also be set"
   type        = bool
   default     = "false"
+}
+variable "dns_vs_settings" {
+  description = "The DNS Virtual Service settings. With the auto_allocate_ip option is set to \"true\" the VS IP address will be allocated via an IPAM profile. Example:{ auto_allocate_ip = \"true\", auto_allocate_public_ip = \"true\", vs_ip = \"\", network_name = \"network-192.168.20.0/24\", network = \"192.168.20.0/24\" }"
+  type        = object({ auto_allocate_ip = bool, auto_allocate_public_ip = bool, vs_ip = string, network = string })
+  default     = null
 }
 variable "configure_gslb" {
   description = "Configure GSLB. The gslb_site_name, gslb_domains, and configure_dns_vs variables must also be set. Optionally the additional_gslb_sites variable can be used to add active GSLB sites"

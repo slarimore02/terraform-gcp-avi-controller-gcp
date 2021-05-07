@@ -46,22 +46,25 @@
           addr: "${item.addr}"
           type: "${item.type}"
 %{ endfor ~}
-  %{ if configure_ipam_profile }
-    ipam_network: ${ipam_network}  
-    ipam_network_host: ${ipam_network_host}
-    ipam_network_netmask: ${ipam_network_netmask}
-    ipam_net_start: ${ipam_net_start}
-    ipam_net_end: ${ipam_net_end}
-  %{ endif }
-  %{ if configure_dns_profile }
+%{ if configure_ipam_profile ~}
+    ipam_networks:
+      ${ indent(6, yamlencode(ipam_networks))}
+%{ endif ~}
+%{ if configure_dns_profile ~}
     dns_service_domain: ${dns_service_domain}
-  %{ endif }
-  %{ if configure_gslb }
+%{ endif ~}
+%{ if configure_dns_vs ~}
+    dns_vs_settings: 
+      ${ indent(6, yamlencode(dns_vs_settings))}
+%{ endif ~}
+%{ if configure_gslb ~}
     gslb_site_name: ${gslb_site_name}
-  %{ endif }
-  %{ if vip_allocation_strategy == "ILB" }
+    additional_gslb_sites:
+      ${ indent(6, yamlencode(additional_gslb_sites))}
+%{ endif ~}
+%{ if vip_allocation_strategy == "ILB" ~}
     cloud_router: ${cloud_router}
-  %{ endif }
+%{ endif ~}
   tasks:
     - name: Wait for Controller to become ready
       wait_for:
@@ -97,59 +100,6 @@
           use_uuid_from_input: false
         welcome_workflow_complete: true
         
-%{ if configure_ipam_profile }
-    - name: Create Avi Network Object
-      avi_network:
-        avi_credentials: "{{ avi_credentials }}"
-        state: present
-        name: "network-{{ ipam_network }}"
-        dhcp_enabled: false
-        configured_subnets:
-        - prefix:
-            ip_addr:
-              addr: "{{ ipam_network_host }}"
-              type: V4
-            mask: "{{ ipam_network_netmask }}"
-          static_ip_ranges:
-          - range:
-              begin:
-                addr: "{{ ipam_net_start }}"
-                type: V4
-              end:
-                addr: "{{ ipam_net_end }}"
-                type: V4
-            type: STATIC_IPS_FOR_VIP_AND_SE
-        synced_from_se: false
-        ip6_autocfg_enabled: false
-      register: create_network
-
-    - name: Create Avi IPAM Profile
-      avi_ipamdnsproviderprofile:
-        avi_credentials: "{{ avi_credentials }}"
-        state: present
-        name: Avi_IPAM
-        type: IPAMDNS_TYPE_INTERNAL
-        internal_profile:
-          ttl: 30
-          usable_networks:
-          - nw_ref: "{{ create_network.obj.url }}"
-        allocate_ip_in_vrf: false
-      register: create_ipam
-%{ endif }
-%{ if configure_dns_profile }
-    - name: Create Avi DNS Profile
-      avi_ipamdnsproviderprofile:
-        avi_credentials: "{{ avi_credentials }}"
-        state: present
-        name: Avi_DNS
-        type: IPAMDNS_TYPE_INTERNAL_DNS
-        internal_profile:
-          dns_service_domain:
-          - domain_name: "{{ dns_service_domain }}"
-            pass_through: true
-          ttl: 30
-      register: create_dns
-%{ endif }
     - name: Configure Cloud
       avi_cloud:
         avi_credentials: "{{ avi_credentials }}"
@@ -158,10 +108,6 @@
         vtype: CLOUD_GCP
         dhcp_enabled: true
         license_type: "LIC_CORES" 
-        %{ if configure_ipam_profile }
-        ipam_provider_ref: "{{ create_ipam.obj.url }}" %{ endif}
-        %{ if configure_dns_profile }
-        dns_provider_ref:  "{{ create_dns.obj.url }}" %{ endif}
         gcp_configuration:
           region_name: "{{ region }}"
           se_project_id: "{{ se_project_id }}"
@@ -265,6 +211,81 @@
             duration: "10080"
             enabled: true
 %{ endif }
+%{ if configure_ipam_profile ~}
+    - name: Update IPAM Network Objects with Static Pool
+      avi_network:
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
+        avi_api_update_method: patch
+        avi_api_patch_op: add
+        name: "network-{{ item.network }}"
+        dhcp_enabled: false
+        configured_subnets:
+          - prefix:
+              ip_addr:
+                addr: "{{ item.network | ipaddr('network') }}"
+                type: "V4"
+              mask: "{{ item.network | ipaddr('prefix') }}"
+            static_ip_ranges:
+            - range:
+                begin:
+                  addr: "{{ item.static_pool.0 }}"
+                  type: "V4"
+                end:
+                  addr: "{{ item.static_pool.1 }}"
+                  type: "V4"
+              type: STATIC_IPS_FOR_VIP_AND_SE
+        ip6_autocfg_enabled: false
+      loop: "{{ ipam_networks }}"
+      register: ipam_net
+    - name: Create list with IPAM Network URLs
+      set_fact: ipam_net_urls="{{ ipam_net.results | map(attribute='obj.url') | list }}"
+    - name: Create list formated for Avi IPAM profile API
+      set_fact:
+        ipam_list: "{{ ipam_list | default([]) + [{ 'nw_ref': item  }] }}"
+      loop: "{{ ipam_net_urls }}"
+    - name: Create Avi IPAM Profile
+      avi_ipamdnsproviderprofile:
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
+        name: Avi_IPAM
+        type: IPAMDNS_TYPE_INTERNAL
+        internal_profile:
+          ttl: 30
+          usable_networks: "{{ ipam_list }}"
+        allocate_ip_in_vrf: false
+      register: create_ipam
+    - name: Update Cloud Configuration with IPAM profile 
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: patch
+        path: "cloud/{{ avi_cloud.obj.uuid }}"
+        data:
+          add:
+            ipam_provider_ref: "{{ create_ipam.obj.url }}"
+%{ endif ~}
+%{ if configure_dns_profile }
+    - name: Create Avi DNS Profile
+      avi_ipamdnsproviderprofile:
+        avi_credentials: "{{ avi_credentials }}"
+        state: present
+        name: Avi_DNS
+        type: IPAMDNS_TYPE_INTERNAL_DNS
+        internal_profile:
+          dns_service_domain:
+          - domain_name: "{{ dns_service_domain }}"
+            pass_through: true
+          ttl: 30
+      register: create_dns
+    - name: Update Cloud Configuration with DNS profile 
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: patch
+        path: "cloud/{{ avi_cloud.obj.uuid }}"
+        data:
+          add:
+            dns_provider_ref: "{{ create_dns.obj.url }}"
+%{ endif }
 %{ if configure_gslb }
     - name: Configure GSLB SE-Group
       avi_api_session:
@@ -287,7 +308,7 @@
             enabled: true
       register: gslb_se_group
 %{ endif}
-%{ if configure_dns_vs }
+%{ if configure_dns_vs ~}
     - name: Create DNS VSVIP
       avi_api_session:
         avi_credentials: "{{ avi_credentials }}"
@@ -297,33 +318,37 @@
         data:
           east_west_placement: false
           cloud_ref: "{{ avi_cloud.obj.url }}"
-          %{ if configure_gslb }
+%{ if configure_gslb ~}
           se_group_ref: "{{ gslb_se_group.obj.url }}"
-          %{ endif}
+%{ endif ~}
           vip:
           - enabled: true
-            auto_allocate_ip: true
-            %{ if controller_public_address }
-            auto_allocate_floating_ip: true
-            %{ else }
-            auto_allocate_floating_ip: false
-            %{ endif }
+            vip_id: 0
+%{ if dns_vs_settings.auto_allocate_ip == "false" ~}
+            ip_address:
+              addr: "{{ dns_vs_settings.vs_ip }}"
+              type: "V4"
+%{ endif ~}            
+            auto_allocate_ip: "{{ dns_vs_settings.auto_allocate_ip }}"
+%{ if dns_vs_settings.auto_allocate_ip ~}
+            auto_allocate_floating_ip: "{{ dns_vs_settings.auto_allocate_public_ip }}"
+%{ endif ~}
             avi_allocated_vip: false
             avi_allocated_fip: false
             auto_allocate_ip_type: V4_ONLY
             prefix_length: 32
             placement_networks: []
             ipam_network_subnet:
-              network_ref: "{{ create_network.obj.url }}"
+              network_ref: "/api/network/?name=network-{{ dns_vs_settings.network }}"
               subnet:
                 ip_addr:
-                  addr: "{{ ipam_network_host }}"
+                  addr: "{{ dns_vs_settings.network | ipaddr('network') }}"
                   type: V4
-                mask: "{{ ipam_network_netmask }}"
+                mask: "{{ dns_vs_settings.network | ipaddr('prefix') }}"
           dns_info:
           - type: DNS_RECORD_A
             algorithm: DNS_RECORD_RESPONSE_CONSISTENT_HASH
-            fqdn: "dns-vs.{{ dns_service_domain }}"
+            fqdn: "dns.{{ dns_service_domain }}"
           name: vsvip-DNS-VS-Default-Cloud
       register: vsvip_results
 
