@@ -219,9 +219,9 @@ variable "firewall_controller_allow_source_range" {
   default     = "0.0.0.0/0"
 }
 variable "dns_servers" {
-  description = "The optional DNS servers that will be used for local DNS resolution by the controller"
+  description = "The optional DNS servers that will be used for local DNS resolution by the controller. Example [\"8.8.4.4\", \"8.8.8.8\"]"
   type        = list(string)
-  default     = [""]
+  default     = null
 }
 variable "dns_search_domain" {
   description = "The optional DNS search domain that will be used by the controller"
@@ -230,8 +230,8 @@ variable "dns_search_domain" {
 }
 variable "ntp_servers" {
   description = "The NTP Servers that the Avi Controllers will use. The server should be a valid IP address (v4 or v6) or a DNS name. Valid options for type are V4, DNS, or V6"
-  type        = list(object({ server = string, type = string }))
-  default     = [{ server = "0.us.pool.ntp.org", type = "DNS" }, { server = "1.us.pool.ntp.org", type = "DNS" }, { server = "2.us.pool.ntp.org", type = "DNS" }, { server = "3.us.pool.ntp.org", type = "DNS" }]
+  type        = list(object({ addr = string, type = string }))
+  default     = [{ addr = "0.us.pool.ntp.org", type = "DNS" }, { addr = "1.us.pool.ntp.org", type = "DNS" }, { addr = "2.us.pool.ntp.org", type = "DNS" }, { addr = "3.us.pool.ntp.org", type = "DNS" }]
 }
 variable "email_config" {
   description = "The Email settings that will be used for sending password reset information or for trigged alerts. The default setting will send emails directly from the Avi Controller"

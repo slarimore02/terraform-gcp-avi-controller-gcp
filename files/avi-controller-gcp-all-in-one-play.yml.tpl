@@ -33,6 +33,19 @@
     se_ha_mode: ${se_ha_mode}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
+%{ if dns_servers != null ~}
+    dns_servers:
+%{ for item in dns_servers ~}
+      - addr: "${item}"
+        type: "V4"
+%{ endfor ~}
+%{ endif ~}
+    ntp_servers:
+%{ for item in ntp_servers ~}
+      - server:
+          addr: "${item.addr}"
+          type: "${item.type}"
+%{ endfor ~}
   %{ if configure_ipam_profile }
     ipam_network: ${ipam_network}  
     ipam_network_host: ${ipam_network_host}
@@ -66,20 +79,13 @@
           se_in_provider_context: true
           tenant_access_to_provider_se: true
           tenant_vrf: false
+%{ if dns_servers != null ~}
         dns_configuration:
-          server_list:
-          %{ for server in dns_servers }
-          - addr: ${server}
-            type: V4
-          %{ endfor }
+          server_list: "{{ dns_servers }}"
           search_domain: "{{ dns_search_domain }}"
+%{ endif ~}
         ntp_configuration:
-          ntp_server_list:
-            %{ for item in ntp_servers }
-            - "${item.server}":
-              addr: "${item.server}"
-              type: ${item.type}
-            %{ endfor }
+          ntp_servers: "{{ ntp_servers }}"
         portal_configuration:
           allow_basic_authentication: false
           disable_remote_cli_shell: false
