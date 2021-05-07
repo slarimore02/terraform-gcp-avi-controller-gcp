@@ -6,7 +6,7 @@
     - role: avinetworks.avisdk
   vars:
     avi_credentials:
-        controller: ${controller_ip_1}
+        controller: "{{ controller_ip[0] }}"
         username: "admin"
         password: "{{ password }}"
         api_version: ${avi_version}
@@ -14,6 +14,10 @@
     password: "{{ password }}"
     api_version: ${avi_version}
     cloud_name: "Default-Cloud"
+    controller_ip:
+      ${ indent(6, yamlencode(controller_ip))}
+    controller_names:
+      ${ indent(6, yamlencode(controller_names))}
     dns_search_domain: ${dns_search_domain}
     ansible_become: yes
     ansible_become_password: "{{ password }}"
@@ -41,14 +45,6 @@
   %{ endif }
   %{ if configure_gslb }
     gslb_site_name: ${gslb_site_name}
-  %{ endif }
-    controller_ip_1: ${controller_ip_1}
-  %{ if controller_ha }
-    controller_name_1: ${controller_name_1}
-    controller_name_2: ${controller_name_2}
-    controller_ip_2: ${controller_ip_2}
-    controller_name_3: ${controller_name_3}
-    controller_ip_3: ${controller_ip_3}
   %{ endif }
   %{ if vip_allocation_strategy == "ILB" }
     cloud_router: ${cloud_router}
@@ -433,7 +429,7 @@
             password: "{{ password }}"
             ip_addresses:
               - type: "V4"
-                addr: "{{ controller_ip_1 }}"
+                addr: "{{ controller_ip[0] }}"
             enabled: True
             member_type: "GSLB_ACTIVE_MEMBER"
             port: 443
@@ -511,21 +507,21 @@
         #  type: V4
         #  addr: "{{ controller_cluster_vip }}"
         nodes:
-            - name: "{{ controller_name_1 }}" 
+            - name:  "{{ controller_names[0] }}" 
               password: "{{ password }}"
               ip:
                 type: V4
-                addr: "{{ controller_ip_1 }}"
-            - name: "{{ controller_name_2 }}"
+                addr: "{{ controller_ip[0] }}"
+            - name:  "{{ controller_names[1] }}" 
               password: "{{ password }}"
               ip:
                 type: V4
-                addr: "{{ controller_ip_2 }}"
-            - name: "{{ controller_name_3 }}"
+                addr: "{{ controller_ip[1] }}"
+            - name:  "{{ controller_names[2] }}" 
               password: "{{ password }}"
               ip:
                 type: V4
-                addr: "{{ controller_ip_3 }}"
+                addr: "{{ controller_ip[2] }}"
         name: "cluster01"
         tenant_uuid: "admin"
 %{ endif }

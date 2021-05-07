@@ -19,12 +19,8 @@ locals {
     vip_allocation_strategy         = var.vip_allocation_strategy
     zones                           = data.google_compute_zones.available.names
     controller_ha                   = var.controller_ha
-    controller_ip_1                 = google_compute_instance.avi_controller[0].network_interface[0].network_ip
-    controller_name_1               = var.controller_ha ? google_compute_instance.avi_controller[0].name : null
-    controller_ip_2                 = var.controller_ha ? google_compute_instance.avi_controller[1].network_interface[0].network_ip : null
-    controller_name_2               = var.controller_ha ? google_compute_instance.avi_controller[1].name : null
-    controller_ip_3                 = var.controller_ha ? google_compute_instance.avi_controller[2].network_interface[0].network_ip : null
-    controller_name_3               = var.controller_ha ? google_compute_instance.avi_controller[2].name : null
+    controller_ip                   = local.controller_ip
+    controller_names                = local.controller_names
     cloud_router                    = var.create_networking ? var.vip_allocation_strategy == "ILB" ? google_compute_router.avi[0].name : null : null
     configure_ipam_profile          = var.configure_ipam_profile
     ipam_network                    = var.ipam_network
@@ -47,6 +43,9 @@ locals {
     medium = "custom-16-32768"
     large  = "custom-24-49152"
   }
+
+  controller_names = google_compute_instance.avi_controller[*].name
+  controller_ip    = google_compute_instance.avi_controller[*].network_interface[0].network_ip
 }
 resource "google_compute_instance" "avi_controller" {
   count                     = var.controller_ha ? 3 : 1
