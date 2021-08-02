@@ -1,4 +1,5 @@
 resource "google_compute_firewall" "avi_controller_mgmt" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.name_prefix}-avi-controller-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
@@ -14,6 +15,7 @@ resource "google_compute_firewall" "avi_controller_mgmt" {
 }
 
 resource "google_compute_firewall" "avi_controller_to_controller" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.name_prefix}-avi-controller-to-controller"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
@@ -29,6 +31,7 @@ resource "google_compute_firewall" "avi_controller_to_controller" {
 }
 
 resource "google_compute_firewall" "avi_se_to_se" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.name_prefix}-avi-se-to-se"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
@@ -52,6 +55,7 @@ resource "google_compute_firewall" "avi_se_to_se" {
 }
 
 resource "google_compute_firewall" "avi_se_mgmt" {
+  count   = var.create_firewall_rules ? 1 : 0
   name    = "${var.name_prefix}-avi-se-mgmt"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
@@ -71,7 +75,7 @@ resource "google_compute_firewall" "avi_se_mgmt" {
   depends_on  = [google_compute_network.vpc_network]
 }
 resource "google_compute_firewall" "avi_se_data" {
-  count   = var.configure_firewall_se_data ? 1 : 0
+  count   = var.create_firewall_rules ? var.configure_firewall_se_data ? 1 : 0 : 0
   name    = "${var.name_prefix}-avi-se-data"
   project = var.network_project != "" ? var.network_project : var.project
   network = var.create_networking ? google_compute_network.vpc_network[0].name : var.custom_vpc_name
