@@ -46,7 +46,7 @@ terraform {
   backend "local" {
   }
 }
-module "avi-controller-gcp" {
+module "avi_controller_gcp" {
   source  = "slarimore02/avi-controller-gcp/gcp"
   version = "1.0.x"
 
@@ -54,16 +54,15 @@ module "avi-controller-gcp" {
   create_networking = "true"
   create_iam = "false"
   controller_default_password = "Value Redacted and available within the VMware Customer Portal"
-  avi_version = "20.1.3"
+  avi_version = "20.1.6"
   service_account_email = "<sa-account>@<project>.iam.gserviceaccount.com"
   controller_image_gs_path = "<bucket>/gcp_controller-20.1.3-9085.tar.gz"
   controller_password = "password"
   name_prefix = "avi"
   project = "gcp-project"
-  vpc_network_name = "avi-vpc-network"
 }
 output "controller_address" { 
-  value = module.avi_controller_gcp.controller_address
+  value = module.avi_controller_gcp.controllers
 } 
 ```
 ## GSLB Deployment Example
@@ -81,7 +80,7 @@ module "avi_controller_east" {
   custom_vpc_name             = "vpc"
   custom_subnetwork_name      = "subnet-east-1"
   create_iam = "false"
-  avi_version = "20.1.5"
+  avi_version = "20.1.6"
   controller_public_address = "true"
   service_account_email = "<email>@<account>.iam.gserviceaccount.com"
   controller_ha = "true"
@@ -91,7 +90,7 @@ module "avi_controller_east" {
   name_prefix = "east1"
   project = "<project>"
   configure_ipam_profile          = "true"
-  ipam_network                    = "192.168.252.0/24"
+  ipam_networks                    = [{ network = "192.168.1.0/24" , static_pool = ["192.168.1.10", "192.168.1.30"]}]
   ipam_network_range              = ["192.168.252.10", "192.168.252.100"]
   configure_dns_profile           = "true"
   dns_service_domain              = "east.domain"
@@ -106,7 +105,7 @@ module "avi_controller_west" {
   custom_vpc_name             = "vpc"
   custom_subnetwork_name      = "subnet-west-1"
   create_iam = "false"
-  avi_version = "20.1.5"
+  avi_version = "20.1.6"
   controller_public_address = "true"
   service_account_email = "<email>@<project>.iam.gserviceaccount.com"
   controller_ha = "true"
@@ -238,7 +237,7 @@ No modules.
 | <a name="input_firewall_se_data_source_range"></a> [firewall\_se\_data\_source\_range](#input\_firewall\_se\_data\_source\_range) | The IP range allowed to access Virtual Services hosted on Service Engines. The configure\_firewall\_se\_data and firewall\_se\_data\_rules variables must also be set | `string` | `"0.0.0.0/0"` | no |
 | <a name="input_gslb_domains"></a> [gslb\_domains](#input\_gslb\_domains) | A list of GSLB domains that will be configured | `list(string)` | <pre>[<br>  ""<br>]</pre> | no |
 | <a name="input_gslb_site_name"></a> [gslb\_site\_name](#input\_gslb\_site\_name) | The name of the GSLB site the deployed Controller(s) will be a member of. | `string` | `""` | no |
-| <a name="input_ipam_networks"></a> [ipam\_networks](#input\_ipam\_networks) | This variable configures the IPAM network(s). Example: { network = "192.168.20.0/24" , static\_pool = ["192.168.1.10","192.168.1.30"]} | `list(object({ network = string, static_pool = list(string) }))` | <pre>[<br>  {<br>    "network": "",<br>    "static_pool": [<br>      ""<br>    ]<br>  }<br>]</pre> | no |
+| <a name="input_ipam_networks"></a> [ipam\_networks](#input\_ipam\_networks) | This variable configures the IPAM network(s). Example: [{ network = "192.168.1.0/24" , static\_pool = ["192.168.1.10","192.168.1.30"]}] | `list(object({ network = string, static_pool = list(string) }))` | <pre>[<br>  {<br>    "network": "",<br>    "static_pool": [<br>      ""<br>    ]<br>  }<br>]</pre> | no |
 | <a name="input_name_prefix"></a> [name\_prefix](#input\_name\_prefix) | This prefix is appended to the names of the Controller and SEs | `string` | n/a | yes |
 | <a name="input_network_project"></a> [network\_project](#input\_network\_project) | The GCP Network project that the Controller and SEs will use. If not set the project variable will be used | `string` | `""` | no |
 | <a name="input_ntp_servers"></a> [ntp\_servers](#input\_ntp\_servers) | The NTP Servers that the Avi Controllers will use. The server should be a valid IP address (v4 or v6) or a DNS name. Valid options for type are V4, DNS, or V6 | `list(object({ addr = string, type = string }))` | <pre>[<br>  {<br>    "addr": "0.us.pool.ntp.org",<br>    "type": "DNS"<br>  },<br>  {<br>    "addr": "1.us.pool.ntp.org",<br>    "type": "DNS"<br>  },<br>  {<br>    "addr": "2.us.pool.ntp.org",<br>    "type": "DNS"<br>  },<br>  {<br>    "addr": "3.us.pool.ntp.org",<br>    "type": "DNS"<br>  }<br>]</pre> | no |

@@ -25,7 +25,7 @@ variable "configure_ipam_profile" {
   default     = "false"
 }
 variable "ipam_networks" {
-  description = "This variable configures the IPAM network(s). Example: { network = \"192.168.20.0/24\" , static_pool = [\"192.168.1.10\",\"192.168.1.30\"]}"
+  description = "This variable configures the IPAM network(s). Example: [{ network = \"192.168.1.0/24\" , static_pool = [\"192.168.1.10\",\"192.168.1.30\"]}]"
   type        = list(object({ network = string, static_pool = list(string) }))
   default     = [{ network = "", static_pool = [""] }]
 }
