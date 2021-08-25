@@ -1,6 +1,8 @@
 # AVI Controller Deployment on GCP Terraform module
 This Terraform module creates and configures an AVI (NSX Advanced Load-Balancer) Controller on GCP
 
+![single-site workflow](https://github.com/slarimore02/terraform-gcp-avi-controller-gcp/actions/workflows/single-site-test.yml/badge.svg)
+
 ## Module Functions
 The module is meant to be modular and can create all or none of the prerequiste resources needed for the AVI GCP Deployment including:
 * VPC and Subnet for the Controller (optional with create_networking variable)
@@ -54,9 +56,9 @@ module "avi_controller_gcp" {
   create_networking = "true"
   create_iam = "false"
   controller_default_password = "Value Redacted and available within the VMware Customer Portal"
-  avi_version = "20.1.6"
+  avi_version = "21.1.1"
   service_account_email = "<sa-account>@<project>.iam.gserviceaccount.com"
-  controller_image_gs_path = "<bucket>/gcp_controller-20.1.3-9085.tar.gz"
+  controller_image_gs_path = "<bucket>/gcp_controller-21.1.1.tar.gz"
   controller_password = "password"
   name_prefix = "avi"
   project = "gcp-project"
@@ -80,12 +82,12 @@ module "avi_controller_east" {
   custom_vpc_name             = "vpc"
   custom_subnetwork_name      = "subnet-east-1"
   create_iam = "false"
-  avi_version = "20.1.6"
+  avi_version = "21.1.1"
   controller_public_address = "true"
   service_account_email = "<email>@<account>.iam.gserviceaccount.com"
   controller_ha = "true"
   controller_default_password = "<default-password>"
-  controller_image_gs_path = "<bucket>/gcp_controller-20.1.5.tar.gz"
+  controller_image_gs_path = "<bucket>/gcp_controller-21.1.1.tar.gz"
   controller_password = "<new-password>"
   name_prefix = "east1"
   project = "<project>"
@@ -105,12 +107,12 @@ module "avi_controller_west" {
   custom_vpc_name             = "vpc"
   custom_subnetwork_name      = "subnet-west-1"
   create_iam = "false"
-  avi_version = "20.1.6"
+  avi_version = "21.1.1"
   controller_public_address = "true"
   service_account_email = "<email>@<project>.iam.gserviceaccount.com"
   controller_ha = "true"
   controller_default_password = "<default-password>"
-  controller_image_gs_path = "<bucket>/gcp_controller-20.1.5.tar.gz"
+  controller_image_gs_path = "<bucket>/gcp_controller-21.1.1.tar.gz"
   controller_password = "<new-password>"
   name_prefix = "west1"
   project = "<project>"
@@ -154,15 +156,15 @@ https://avinetworks.com/docs/latest/system-limits/
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.6 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 3.58.0 |
-| <a name="requirement_null"></a> [null](#requirement\_null) | 3.0.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 3.81.0 |
+| <a name="requirement_null"></a> [null](#requirement\_null) | 3.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 3.58.0 |
-| <a name="provider_null"></a> [null](#provider\_null) | 3.0.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 3.81.0 |
+| <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
 
 ## Modules
 
@@ -196,7 +198,7 @@ No modules.
 | [google_project_iam_member.avi_se_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.avi_server_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
 | [google_project_iam_member.avi_storage_role](https://registry.terraform.io/providers/hashicorp/google/latest/docs/resources/project_iam_member) | resource |
-| [null_resource.ansible_provisioner](https://registry.terraform.io/providers/hashicorp/null/3.0.0/docs/resources/resource) | resource |
+| [null_resource.ansible_provisioner](https://registry.terraform.io/providers/hashicorp/null/3.1.0/docs/resources/resource) | resource |
 | [google_compute_zones.available](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/compute_zones) | data source |
 | [google_service_account.avi](https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/service_account) | data source |
 

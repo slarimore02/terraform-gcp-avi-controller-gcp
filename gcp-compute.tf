@@ -65,6 +65,10 @@ resource "google_compute_instance" "avi_controller" {
       content {}
     }
   }
+  timeouts {
+    create = "30m"
+    delete = "30m"
+  }
   service_account {
     email  = data.google_service_account.avi.email
     scopes = ["cloud-platform"]
