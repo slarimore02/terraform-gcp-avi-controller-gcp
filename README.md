@@ -1,7 +1,7 @@
 # AVI Controller Deployment on GCP Terraform module
 This Terraform module creates and configures an AVI (NSX Advanced Load-Balancer) Controller on GCP
 
-![single-site workflow](https://github.com/slarimore02/terraform-gcp-avi-controller-gcp/actions/workflows/single-site-test.yml/badge.svg)
+[![Avi Deployment - Single Site](https://github.com/slarimore02/terraform-gcp-avi-controller-gcp/actions/workflows/single-site-test.yml/badge.svg)](https://github.com/slarimore02/terraform-gcp-avi-controller-gcp/actions/workflows/single-site-test.yml)
 
 ## Module Functions
 The module is meant to be modular and can create all or none of the prerequiste resources needed for the AVI GCP Deployment including:
