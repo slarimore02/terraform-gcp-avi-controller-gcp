@@ -56,3 +56,33 @@ variable "controller_public_address" {
   type        = bool
   default     = "true"
 }
+variable "configure_ipam_profile" {
+  description = "Configure Avi IPAM Profile for Virtual Service Address Allocation. If set to true the virtualservice_network variable must also be set"
+  type        = bool
+  default     = "false"
+}
+variable "ipam_networks" {
+  description = "This variable configures the IPAM network(s). Example: [{ network = \"192.168.1.0/24\" , static_pool = [\"192.168.1.10\",\"192.168.1.30\"]}]"
+  type        = list(object({ network = string, static_pool = list(string) }))
+  default     = [{ network = "", static_pool = [""] }]
+}
+variable "configure_dns_profile" {
+  description = "Configure Avi DNS Profile for DNS Record Creation for Virtual Services. If set to true the dns_service_domain variable must also be set"
+  type        = bool
+  default     = "false"
+}
+variable "dns_service_domain" {
+  description = "The DNS Domain that will be available for Virtual Services. Avi will be the Authorative Nameserver for this domain and NS records may need to be created pointing to the Avi Service Engine addresses. An example is demo.Avi.com"
+  type        = string
+  default     = ""
+}
+variable "configure_dns_vs" {
+  description = "Create DNS Virtual Service. The configure_dns_profile and configure_ipam_profile variables must be set to true and their associated configuration variables must also be set"
+  type        = bool
+  default     = "false"
+}
+variable "dns_vs_settings" {
+  description = "The DNS Virtual Service settings. With the auto_allocate_ip option is set to \"true\" the VS IP address will be allocated via an IPAM profile. Example:{ auto_allocate_ip = \"true\", auto_allocate_public_ip = \"true\", vs_ip = \"\", network_name = \"network-192.168.20.0/24\", network = \"192.168.20.0/24\" }"
+  type        = object({ auto_allocate_ip = bool, auto_allocate_public_ip = bool, vs_ip = string, network = string })
+  default     = null
+}

@@ -32,6 +32,12 @@ jobs:
       TF_VAR_controller_password: ${{ secrets.TF_VAR_CONTROLLER_PASSWORD }}
       TF_VAR_controller_image_gs_path: ${{ secrets.BUCKET }}/gcp_controller-${{ matrix.avi_version }}.tar.gz
       TF_VAR_controller_public_address: true
+      TF_VAR_configure_ipam_profile: true
+      TF_VAR_ipam_networks: '[{ network = "192.168.250.0/24" , static_pool = ["192.168.250.1", "192.168.250.254"]}]'
+      TF_VAR_configure_dns_profile: "true"
+      TF_VAR_dns_service_domain: "aviterraform.local"
+      TF_VAR_configure_dns_vs: "true"
+      TF_VAR_dns_vs_settings: '{ auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network_name = "network-192.168.250.0/24", network = "192.168.252.0/24" }'
     defaults:
       run:
         shell: bash
