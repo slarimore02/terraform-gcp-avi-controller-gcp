@@ -94,5 +94,5 @@ jobs:
       - name: Cleanup Terraform Env
         if: ${{ always() }}
         run: |
-          go test -v cleanup_test.go -timeout 30m
+          go test -v cleanup_infra_test.go -timeout 30m
           rm /home/runner/gcp-creds.json
