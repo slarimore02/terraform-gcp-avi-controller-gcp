@@ -22,7 +22,6 @@ func getTerraVars() map[string]interface{} {
    terraVars := make(map[string]interface{})
 
 	for _, element := range os.Environ() {
-		//variable := strings.Split(element, "=")
       variable := strings.SplitN(element, "=", 2)
 
 		if strings.HasPrefix(variable[0], "TF_VAR_") == true {
@@ -31,6 +30,16 @@ func getTerraVars() map[string]interface{} {
 		}
 	}
    return terraVars
+}
+
+func createRandomPrefix(base string) string {
+
+   fmt.Println(base)
+   random := strings.ToLower(random.UniqueId())
+   prefix := fmt.Sprintf(base+"%s", random)
+   fmt.Println(prefix)
+
+   return prefix
 }
 
 func TestDeployment(t *testing.T) {
@@ -54,16 +63,27 @@ func TestDeployment(t *testing.T) {
    //os.Setenv("SKIP_bootstrap", "true")
    //os.Setenv("SKIP_apply", "true")
    os.Setenv("SKIP_perpetual_diff", "true")
-   //os.Setenv("SKIP_website_tests", "true")
+   //os.Setenv("SKIP_singlesite_controller_tests", "true")
+   //os.Setenv("SKIP_gslb_controller_tests", "true")
    os.Setenv("SKIP_teardown", "true")
    os.Setenv("SKIP_destroy", "true")
 
+   switch siteType {
+      case "single-site":
+         os.Setenv("SKIP_gslb_controller_tests", "true")
+      case "gslb":
+         os.Setenv("SKIP_singlesite_controller_tests", "true")
+   }
+
    test_structure.RunTestStage(t, "bootstrap", func() {
-      string_name := "TF_VAR_name_prefix"
-      random := strings.ToLower(random.UniqueId())
-      randomName := fmt.Sprintf("terraform%s", random)
-      os.Setenv(string_name, randomName)
-      test_structure.SaveString(t, TerraformDir, string_name, randomName )
+      stringNameEast := "TF_VAR_name_prefix_east"
+      stringNameWest := "TF_VAR_name_prefix_west"
+      prefixEast := createRandomPrefix("tfeast")
+      prefixWest := createRandomPrefix("tfwest")
+      os.Setenv(stringNameEast, prefixEast)
+      os.Setenv(stringNameWest, prefixWest)
+      test_structure.SaveString(t, TerraformDir, stringNameEast, prefixEast )
+      test_structure.SaveString(t, TerraformDir, stringNameWest, prefixWest )
    })
 
    // At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -101,23 +121,84 @@ func TestDeployment(t *testing.T) {
       terraform.Destroy(t, terraformOptions)
    })
 
-   // Run HTTP tests
-   test_structure.RunTestStage(t, "website_tests", func() {
-      var controllerEndpoint interface{}
+   // Run Controller tests for a single site deployment
+   test_structure.RunTestStage(t, "singlesite_controller_tests", func() {
+      var controllerIPs []string
       terraformOptions := test_structure.LoadTerraformOptions(t, TerraformDir)
-
-      //controllerInfo :=  terraform.OutputRequired(t, terraformOptions, "controllers" )
       controllerInfo :=  terraform.OutputListOfObjects(t, terraformOptions, "controllers" )
       
       publicIP := os.Getenv("TF_VAR_controller_public_address")
-      if publicIP == "true" {
-         controllerEndpoint = controllerInfo[0]["public_ip_address"]
-      } else {
-         controllerEndpoint = controllerInfo[0]["private_ip_address"]
+
+      switch publicIP {
+         case "true":
+            for index, value := range controllerInfo {
+               _ = index
+               IP := value["public_ip_address"]
+               publicIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, publicIP)
+            }
+         case "false":
+            for index, value := range controllerInfo {
+               _ = index
+               IP := value["private_ip_address"]
+               privateIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, privateIP)
+            }
       }
-      url := fmt.Sprintf("%v", controllerEndpoint)
-      testURL(t, url, "", 200, "Avi Vantage Controller")
-      testURL(t, url, "notfound", 404, "not found")
+      for index, controller := range controllerIPs {
+         _ = index
+         testURL(t, controller, "", 200, "Avi Vantage Controller")
+         testURL(t, controller, "notfound", 404, "not found")
+      }
+   })
+
+   // Run Controller tests for a GSLB deployment
+   test_structure.RunTestStage(t, "gslb_controller_tests", func() {
+      //var controllerEndpoint interface{}
+      var controllerIPs []string
+      terraformOptions := test_structure.LoadTerraformOptions(t, TerraformDir)
+
+      //controllerInfo :=  terraform.OutputRequired(t, terraformOptions, "controllers" )
+      controllersEast :=  terraform.OutputListOfObjects(t, terraformOptions, "controllers_east" )
+      controllersWest :=  terraform.OutputListOfObjects(t, terraformOptions, "controllers_west" )
+
+      publicIP := os.Getenv("TF_VAR_controller_public_address")
+
+      switch publicIP {
+         case "true":
+            for index, value := range controllersEast {
+               _ = index
+               IP := value["public_ip_address"]
+               publicIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, publicIP)
+            }
+            for index, value := range controllersWest {
+               _ = index
+               IP := value["public_ip_address"]
+               publicIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, publicIP)
+               //controllerIPs = append(controllerIPs, publicIP)
+            }
+         case "false":
+            for index, value := range controllersEast {
+               _ = index
+               IP := value["private_ip_address"]
+               privateIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, privateIP)
+            }
+            for index, value := range controllersWest {
+               _ = index
+               IP := value["private_ip_address"]
+               privateIP := fmt.Sprintf("%v", IP)
+               controllerIPs = append(controllerIPs, privateIP)
+            }
+      }
+      for index, controller := range controllerIPs {
+         _ = index
+         testURL(t, controller, "", 200, "Avi Vantage Controller")
+         testURL(t, controller, "notfound", 404, "not found")
+      }
+      
    })
 
 }

@@ -2,6 +2,10 @@ variable "project" {
   description = "The project used for the Avi Controller"
   type        = string
 }
+variable "avi_version" {
+  description = "The version of Avi that will be deployed"
+  type        = string
+}
 variable "controller_default_password" {
   description = "This is the default password for the Avi controller image and can be found in the image download page."
   type        = string
@@ -23,4 +27,37 @@ variable "service_account_email" {
 variable "controller_image_gs_path" {
   description = "The Google Storage path to the GCP Avi Controller tar.gz image file using the bucket/filename syntax"
   type        = string
+}
+variable "name_prefix_east" {
+  description = "This prefix is appended to the names of the Controller and SEs"
+  type        = string
+}
+variable "name_prefix_west" {
+  description = "This prefix is appended to the names of the Controller and SEs in Site 2"
+  type        = string
+}
+variable "controller_ha" {
+  description = "If true a HA controller cluster is deployed and configured"
+  type        = bool
+  default     = "false"
+}
+variable "controller_public_address" {
+  description = "This variable controls if the Controller has a Public IP Address. When set to false the Ansible provisioner will connect to the private IP of the Controller."
+  type        = bool
+  default     = "true"
+}
+variable "custom_vpc_name" {
+  description = "This field can be used to specify an existing VPC for the controller and SEs. The create_networking variable must also be set to false for this network to be used."
+  type        = string
+  default     = null
+}
+variable "custom_subnetwork_east" {
+  description = "This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create_networking variable must also be set to false for this network to be used."
+  type        = string
+  default     = null
+}
+variable "custom_subnetwork_west" {
+  description = "This field can be used to specify an existing VPC subnetwork for the controller and SEs. The create_networking variable must also be set to false for this network to be used."
+  type        = string
+  default     = null
 }
