@@ -76,14 +76,23 @@ func TestDeployment(t *testing.T) {
    }
 
    test_structure.RunTestStage(t, "bootstrap", func() {
-      stringNameEast := "TF_VAR_name_prefix_east"
-      stringNameWest := "TF_VAR_name_prefix_west"
-      prefixEast := createRandomPrefix("tfeast")
-      prefixWest := createRandomPrefix("tfwest")
-      os.Setenv(stringNameEast, prefixEast)
-      os.Setenv(stringNameWest, prefixWest)
-      test_structure.SaveString(t, TerraformDir, stringNameEast, prefixEast )
-      test_structure.SaveString(t, TerraformDir, stringNameWest, prefixWest )
+
+      switch siteType {
+         case "single-site":
+            stringName := "TF_VAR_name_prefix"
+            randomName := createRandomPrefix("terraform")
+            os.Setenv(stringName, randomName)
+            test_structure.SaveString(t, TerraformDir, stringName, randomName )
+         case "gslb":
+            stringNameEast := "TF_VAR_name_prefix_east"
+            stringNameWest := "TF_VAR_name_prefix_west"
+            prefixEast := createRandomPrefix("tfeast")
+            prefixWest := createRandomPrefix("tfwest")
+            os.Setenv(stringNameEast, prefixEast)
+            os.Setenv(stringNameWest, prefixWest)
+            test_structure.SaveString(t, TerraformDir, stringNameEast, prefixEast )
+            test_structure.SaveString(t, TerraformDir, stringNameWest, prefixWest )
+         }
    })
 
    // At the end of the test, run `terraform destroy` to clean up any resources that were created
@@ -154,11 +163,9 @@ func TestDeployment(t *testing.T) {
 
    // Run Controller tests for a GSLB deployment
    test_structure.RunTestStage(t, "gslb_controller_tests", func() {
-      //var controllerEndpoint interface{}
       var controllerIPs []string
       terraformOptions := test_structure.LoadTerraformOptions(t, TerraformDir)
 
-      //controllerInfo :=  terraform.OutputRequired(t, terraformOptions, "controllers" )
       controllersEast :=  terraform.OutputListOfObjects(t, terraformOptions, "controllers_east" )
       controllersWest :=  terraform.OutputListOfObjects(t, terraformOptions, "controllers_west" )
 
@@ -177,7 +184,6 @@ func TestDeployment(t *testing.T) {
                IP := value["public_ip_address"]
                publicIP := fmt.Sprintf("%v", IP)
                controllerIPs = append(controllerIPs, publicIP)
-               //controllerIPs = append(controllerIPs, publicIP)
             }
          case "false":
             for index, value := range controllersEast {
