@@ -22,7 +22,8 @@ func getTerraVars() map[string]interface{} {
    terraVars := make(map[string]interface{})
 
 	for _, element := range os.Environ() {
-		variable := strings.Split(element, "=")
+		//variable := strings.Split(element, "=")
+      variable := strings.SplitN(element, "=", 2)
 
 		if strings.HasPrefix(variable[0], "TF_VAR_") == true {
 			envName := strings.Split(variable[0], "TF_VAR_")

@@ -23,9 +23,10 @@
       delay: 10
       register: avi_cloud
 
-    - name: Print return information from the previous task
+    - name: Display Cloud Config - /api/cloud?name=Default-Cloud
       ansible.builtin.debug:
         var: avi_cloud
+        verbosity: 1
     
     - name: Pause for Avi Controller to build Cluster
       pause:
@@ -42,9 +43,10 @@
       delay: 30
       register: cloudstatus
     
-    - name: Print return information from the previous task
+    - name: Display Cloud Status - /api/cloud/cloud-uuid/status
       ansible.builtin.debug:
         var: cloudstatus
+        verbosity: 1
 
     - name: Get System Config Status
       avi_api_session:
@@ -60,9 +62,10 @@
         msg: The welcome workflow has not been completed successfully
       when: system_config.obj.welcome_workflow_complete != true
 
-    - name: Print return information from the previous task
+    - name: Display System Config - /api/systemconfiguration
       ansible.builtin.debug:
         var: system_config
+        verbosity: 1
     
     - name: Get SE Group Config
       avi_api_session:
@@ -78,11 +81,12 @@
         msg: The SE Group configuration was not updated
       when: se_group_config.obj.results.0.ha_mode != "HA_MODE_SHARED_PAIR" or se_group_config.obj.results.0.se_name_prefix != se_name_prefix
 
-    - name: Print return information from the previous task
+    - name: Display SE Group Config - /api/serviceenginegroup?name=Default-Group
       ansible.builtin.debug:
         var: se_group_config
+        verbosity: 1
 
-    - name: Get Controller Cluster Status
+    - name: Get Controller Cluster State
       avi_api_session:
         avi_credentials: "{{ avi_credentials }}"
         http_method: get
@@ -93,7 +97,53 @@
       register: cluster_runtime
       when: controller_ha | bool
     
-    - name: Print return information from the previous task
+    - name: Display Cluster Runtime State - /api/cluster/runtime
       ansible.builtin.debug:
         var: cluster_runtime.obj.cluster_state
+        verbosity: 1
       when: controller_ha | bool
+
+    - name: Verify Network is created for Virtual Services
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: get
+        path: "network"
+      until: vs_network.obj.count == 1
+      retries: 5
+      delay: 10
+      register: vs_network
+
+    - name: Display Network for Virtual Services - /api/network
+      ansible.builtin.debug:
+        var: vs_network
+        verbosity: 1
+
+    - name: Verify DNS and IPAM profiles are created
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: get
+        path: "ipamdnsproviderprofile"
+      until: dns_ipam_profiles.obj.count == 2
+      retries: 5
+      delay: 10
+      register: dns_ipam_profiles
+
+    - name: Display DNS and IPAM Profiles - /api/ipamdnsproviderprofile
+      ansible.builtin.debug:
+        var: dns_ipam_profiles
+        verbosity: 1
+    
+    - name: Wait for DNS VS to be ready
+      avi_api_session:
+        avi_credentials: "{{ avi_credentials }}"
+        http_method: get
+        path: "virtualservice-inventory?name=DNS-VS"
+      until: dns_vs_status.obj.results.0.runtime.oper_status.state == "OPER_UP"
+      retries: 30
+      delay: 30
+      register: dns_vs_status
+
+    - name: Display DNS VS Details - /api/virtualservice-inventory?name=DNS-VS
+      ansible.builtin.debug:
+        var: dns_vs_status
+        verbosity: 1

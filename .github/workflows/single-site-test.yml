@@ -33,11 +33,11 @@ jobs:
       TF_VAR_controller_image_gs_path: ${{ secrets.BUCKET }}/gcp_controller-${{ matrix.avi_version }}.tar.gz
       TF_VAR_controller_public_address: true
       TF_VAR_configure_ipam_profile: true
-      TF_VAR_ipam_networks: '[{ network = "192.168.250.0/24" , static_pool = ["192.168.250.1", "192.168.250.254"]}]'
+      TF_VAR_ipam_networks: '[{ network="192.168.250.0/24", static_pool=["192.168.250.1", "192.168.250.254"]}]'
       TF_VAR_configure_dns_profile: "true"
       TF_VAR_dns_service_domain: "aviterraform.local"
       TF_VAR_configure_dns_vs: "true"
-      TF_VAR_dns_vs_settings: '{ auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network_name = "network-192.168.250.0/24", network = "192.168.252.0/24" }'
+      TF_VAR_dns_vs_settings: '{ auto_allocate_ip=true, auto_allocate_public_ip=true, vs_ip = "", network_name = "network-192.168.250.0/24", network = "192.168.250.0/24"}'
     defaults:
       run:
         shell: bash
@@ -97,8 +97,8 @@ jobs:
           echo $controller_ip
           ansible-playbook ansible_avi_cleanup.yml -e password=$TF_VAR_controller_password -e controller_ip=$controller_ip -e avi_version=$TF_VAR_avi_version
         
-      - name: Cleanup Terraform Env
+      - name: Run Terraform Destroy
         if: ${{ always() }}
         run: |
-          go test -v cleanup_infra_test.go -timeout 30m
+          go test -v destroy_infra_test.go -timeout 30m
           rm /home/runner/gcp-creds.json
