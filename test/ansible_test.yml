@@ -157,11 +157,13 @@
       retries: 10
       delay: 10
       register: gslb_config
+      when: gslb | bool
 
     - name: Display GSLB Config - /api/gslb
       ansible.builtin.debug:
         var: gslb_config
         verbosity: 1
+      when: gslb | bool
 
     - name: Wait for GSLB Site status to be ready
       avi_api_session:
@@ -172,8 +174,10 @@
       retries: 20
       delay: 30
       register: gslbstatus
+      when: gslb | bool
     
     - name: Display GSLB Status - /api/gslb/gslb-uuid/runtime
       ansible.builtin.debug:
         var: gslbstatus
         verbosity: 1
+      when: gslb | bool

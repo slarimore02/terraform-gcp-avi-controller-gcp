@@ -17,7 +17,7 @@ on:
 jobs:
   # This workflow contains multiple jobs to test various scenarios
   dual-site:
-    name: gslb (${{ matrix.avi_version }},Network_${{ matrix.create_networking }},HA_${{ matrix.controller_ha }})
+    name: gslb (${{ matrix.avi_version }},HA_${{ matrix.controller_ha }})
     runs-on: ubuntu-latest
     env:
       site_type: "gslb"

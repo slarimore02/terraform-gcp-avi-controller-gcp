@@ -1,4 +1,4 @@
-name: Avi Deployment - Single Site
+name: Avi - Single Site Deployment
 
 # Controls when the workflow will run
 on:
