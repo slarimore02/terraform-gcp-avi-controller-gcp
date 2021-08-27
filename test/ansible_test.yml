@@ -40,7 +40,7 @@
         http_method: get
         path: "cloud/{{ avi_cloud.obj.results.0.uuid }}/status"
       until: cloudstatus.obj.state == "CLOUD_STATE_PLACEMENT_READY"
-      retries: 20
+      retries: 30
       delay: 30
       register: cloudstatus
     
