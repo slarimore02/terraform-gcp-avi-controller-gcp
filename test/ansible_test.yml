@@ -19,7 +19,7 @@
       block:
         - name: Pause for Avi Controller to build Cluster
           pause:
-            minutes: 2
+            minutes: 10
           when: verify_gslb == false
           
 
@@ -39,7 +39,7 @@
             http_method: get
             path: "cluster/runtime"
           until: cluster_runtime.obj.cluster_state.progress == 100 and cluster_runtime.obj.cluster_state.state == "CLUSTER_UP_HA_ACTIVE"
-          retries: 20
+          retries: 200
           delay: 30
           register: cluster_runtime
         
