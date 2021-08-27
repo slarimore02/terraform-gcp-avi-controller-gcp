@@ -13,7 +13,7 @@
     cloud_name: "Default-Cloud"
     controller_ha: "{{ controller_ha }}"
     se_name_prefix: "{{ name_prefix }}"
-    gslb: "{{ gslb }}"
+    verify_gslb: false
   tasks:
     - name: Get Cloud Info
       avi_api_session:
@@ -148,36 +148,36 @@
       ansible.builtin.debug:
         var: dns_vs_status
         verbosity: 1
-    
-    - name: Get GSLB Info
-      avi_api_session:
-        avi_credentials: "{{ avi_credentials }}"
-        http_method: get
-        path: "gslb"
-      retries: 10
-      delay: 10
-      register: gslb_config
-      when: gslb | bool
 
-    - name: Display GSLB Config - /api/gslb
-      ansible.builtin.debug:
-        var: gslb_config
-        verbosity: 1
-      when: gslb | bool
+    - name: Verify GSLB Status
+      block:
+        - name: Get GSLB Info
+          avi_api_session:
+            avi_credentials: "{{ avi_credentials }}"
+            http_method: get
+            path: "gslb"
+          retries: 10
+          delay: 10
+          register: gslb_config
 
-    - name: Wait for GSLB Site status to be ready
-      avi_api_session:
-        avi_credentials: "{{ avi_credentials }}"
-        http_method: get
-        path: "gslb/{{ gslb_config.obj.results.0.uuid }}/runtime"
-      until: gslbstatus.obj.info.site.0.site_info.oper_status.state == "OPER_UP" and gslbstatus.obj.info.site.1.site_info.oper_status.state == "OPER_UP"
-      retries: 20
-      delay: 30
-      register: gslbstatus
-      when: gslb | bool
-    
-    - name: Display GSLB Status - /api/gslb/gslb-uuid/runtime
-      ansible.builtin.debug:
-        var: gslbstatus
-        verbosity: 1
-      when: gslb | bool
+        - name: Display GSLB Config - /api/gslb
+          ansible.builtin.debug:
+            var: gslb_config
+            verbosity: 1
+
+        - name: Wait for GSLB Site status to be ready
+          avi_api_session:
+            avi_credentials: "{{ avi_credentials }}"
+            http_method: get
+            path: "gslb/{{ gslb_config.obj.results.0.uuid }}/runtime"
+          until: gslbstatus.obj.info.site.0.site_info.oper_status.state == "OPER_UP" and gslbstatus.obj.info.site.1.site_info.oper_status.state == "OPER_UP"
+          retries: 20
+          delay: 30
+          register: gslbstatus
+        
+        - name: Display GSLB Status - /api/gslb/gslb-uuid/runtime
+          ansible.builtin.debug:
+            var: gslbstatus
+            verbosity: 1
+      when: verify_gslb
+

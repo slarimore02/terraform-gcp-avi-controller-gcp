@@ -82,7 +82,7 @@ jobs:
           export controller_west_ip=$(terraform -chdir="../examples/gslb" output -no-color  -json | jq .controllers_west.value[0].public_ip_address)
           export controller_east_ip=$(terraform -chdir="../examples/gslb" output -no-color  -json | jq .controllers_east.value[0].public_ip_address)
           ansible-playbook ansible_test.yml -e password=$TF_VAR_controller_password -e controller_ip=$controller_east_ip -e avi_version=$TF_VAR_avi_version -e name_prefix=$name_prefix_east -e controller_ha=$TF_VAR_controller_ha
-          ansible-playbook ansible_test.yml -e password=$TF_VAR_controller_password -e controller_ip=$controller_west_ip -e gslb=true -e avi_version=$TF_VAR_avi_version -e name_prefix=$name_prefix_west -e controller_ha=$TF_VAR_controller_ha
+          ansible-playbook ansible_test.yml -e password=$TF_VAR_controller_password -e controller_ip=$controller_west_ip -e verify_gslb=true -e avi_version=$TF_VAR_avi_version -e name_prefix=$name_prefix_west -e controller_ha=$TF_VAR_controller_ha
 
       - name: Cleanup Avi Created Infra
         if: ${{ always() }}
