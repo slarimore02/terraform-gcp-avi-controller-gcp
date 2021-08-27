@@ -42,13 +42,13 @@ jobs:
       matrix:
         include:
           - avi_version: 20.1.6
-            controller_ha: "false"
+            controller_ha: false
           - avi_version: 21.1.1
-            controller_ha: "false"
+            controller_ha: false
           - avi_version: 20.1.6
-            controller_ha: "true"
+            controller_ha: true
           - avi_version: 21.1.1
-            controller_ha: "true"
+            controller_ha: true
       fail-fast: false
         
 
