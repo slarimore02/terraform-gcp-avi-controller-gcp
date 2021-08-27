@@ -8,6 +8,7 @@ on:
   pull_request:
     branches: [ main ]
   release:
+    types: [released]
 
 
   # Allows you to run this workflow manually from the Actions tab
