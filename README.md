@@ -97,7 +97,7 @@ module "avi_controller_east" {
   configure_dns_profile       = "true"
   dns_service_domain          = "east.domain"
   configure_dns_vs            = "true"
-  dns_vs_settings             = { auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network_name = "network-192.168.252.0/24", network = "192.168.252.0/24" }
+  dns_vs_settings             = { auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network = "192.168.252.0/24" }
 }
 module "avi_controller_west" {
   source  = "slarimore02/avi-controller-gcp/gcp"
@@ -122,7 +122,7 @@ module "avi_controller_west" {
   configure_dns_profile           = "true"
   dns_service_domain              = "west.domain"
   configure_dns_vs                = "true"
-  dns_vs_settings                 = { auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network_name = "network-192.168.251.0/24", network = "192.168.251.0/24" }
+  dns_vs_settings                 = { auto_allocate_ip = "true", auto_allocate_public_ip = "true", vs_ip = "", network = "192.168.251.0/24" }
   configure_gslb                  = "true"
   gslb_site_name                  = "West1"
   gslb_domains                    = ["gslb.domain"]

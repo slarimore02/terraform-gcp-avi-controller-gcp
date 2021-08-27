@@ -140,7 +140,7 @@
         http_method: get
         path: "virtualservice-inventory?name=DNS-VS"
       until: dns_vs_status.obj.results.0.runtime.oper_status.state == "OPER_UP"
-      retries: 30
+      retries: 50
       delay: 30
       register: dns_vs_status
 
