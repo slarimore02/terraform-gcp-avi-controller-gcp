@@ -45,7 +45,7 @@ variable "configure_dns_vs" {
   default     = "false"
 }
 variable "dns_vs_settings" {
-  description = "The DNS Virtual Service settings. With the auto_allocate_ip option is set to \"true\" the VS IP address will be allocated via an IPAM profile. Example:{ auto_allocate_ip = \"true\", auto_allocate_public_ip = \"true\", vs_ip = \"\", network_name = \"network-192.168.20.0/24\", network = \"192.168.20.0/24\" }"
+  description = "The DNS Virtual Service settings. With the auto_allocate_ip option is set to \"true\" the VS IP address will be allocated via an IPAM profile. Example:{ auto_allocate_ip = \"true\", auto_allocate_public_ip = \"true\", vs_ip = \"\", network = \"192.168.20.0/24\" }"
   type        = object({ auto_allocate_ip = bool, auto_allocate_public_ip = bool, vs_ip = string, network = string })
   default     = null
 }
