@@ -47,7 +47,7 @@
           ansible.builtin.debug:
             var: cluster_runtime.obj.cluster_state
             verbosity: 1
-      when: controller_ha
+      when: controller_ha | bool
 
     - name: Get Cloud Info
       avi_api_session:
