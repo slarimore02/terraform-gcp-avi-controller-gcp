@@ -141,6 +141,11 @@ variable "service_account_email" {
   description = "This is the service account that will be leveraged by the Avi Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA"
   type        = string
 }
+variable "se_service_account" {
+  description = "This is the service account that will be leveraged by the Avi Service Engines. This is optional and only needed if using service accounts are used for GCP firewall rules in 20.1.7 - https://avinetworks.com/docs/20.1/gcp-firewall-rules/#firewall-rule-filtering-with-service-accounts"
+  type        = string
+  default     = null
+}
 variable "controller_image_gs_path" {
   description = "The Google Storage path to the GCP Avi Controller tar.gz image file using the bucket/filename syntax"
   type        = string

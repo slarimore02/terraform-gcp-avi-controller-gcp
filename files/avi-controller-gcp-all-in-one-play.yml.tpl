@@ -33,6 +33,9 @@
     se_ha_mode: ${se_ha_mode}
     vip_allocation_strategy: ${vip_allocation_strategy}
     controller_ha: ${controller_ha}
+%{ if se_service_account != null && avi_version == "20.1.7" ~}
+    gcp_service_account_email: ${se_service_account}
+%{ endif ~}
 %{ if dns_servers != null ~}
     dns_servers:
 %{ for item in dns_servers ~}
@@ -129,6 +132,9 @@
               cloud_router_names:
                 - "{{ cloud_router }}"
             %{ endif }
+%{ if se_service_account != null ~}
+          gcp_service_account_email: "{{ gcp_service_account_email }}"
+%{ endif ~}
       register: avi_cloud
     - name: Set Backup Passphrase
       avi_backupconfiguration:

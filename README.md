@@ -157,14 +157,14 @@ https://avinetworks.com/docs/latest/system-limits/
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.13.6 |
-| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 3.81.0 |
+| <a name="requirement_google"></a> [google](#requirement\_google) | ~> 3.85.0 |
 | <a name="requirement_null"></a> [null](#requirement\_null) | 3.1.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_google"></a> [google](#provider\_google) | 3.81.0 |
+| <a name="provider_google"></a> [google](#provider\_google) | 3.85.0 |
 | <a name="provider_null"></a> [null](#provider\_null) | 3.1.0 |
 
 ## Modules
@@ -247,6 +247,7 @@ No modules.
 | <a name="input_project"></a> [project](#input\_project) | The project used for the Avi Controller | `string` | n/a | yes |
 | <a name="input_region"></a> [region](#input\_region) | The Region that the Avi controller and SEs will be deployed to | `string` | n/a | yes |
 | <a name="input_se_ha_mode"></a> [se\_ha\_mode](#input\_se\_ha\_mode) | The HA mode of the Service Engine Group. Possible values active/active, n+m, or active/standby | `string` | `"active/active"` | no |
+| <a name="input_se_service_account"></a> [se\_service\_account](#input\_se\_service\_account) | This is the service account that will be leveraged by the Avi Service Engines. This is optional and only needed if using service accounts are used for GCP firewall rules in 20.1.7 - https://avinetworks.com/docs/20.1/gcp-firewall-rules/#firewall-rule-filtering-with-service-accounts | `string` | `null` | no |
 | <a name="input_se_size"></a> [se\_size](#input\_se\_size) | The CPU, Memory, Disk Size of the Service Engines. The default is 1 vCPU, 2 GB RAM, and a 15 GB Disk per Service Engine. Syntax ["cpu\_cores", "memory\_in\_GB", "disk\_size\_in\_GB"] | `list(string)` | <pre>[<br>  "1",<br>  "2",<br>  "15"<br>]</pre> | no |
 | <a name="input_server_project"></a> [server\_project](#input\_server\_project) | The backend server GCP Project. If not set the project variable will be used | `string` | `""` | no |
 | <a name="input_service_account_email"></a> [service\_account\_email](#input\_service\_account\_email) | This is the service account that will be leveraged by the Avi Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA | `string` | n/a | yes |

@@ -34,6 +34,7 @@ locals {
     gslb_domains                    = var.gslb_domains
     additional_gslb_sites           = var.additional_gslb_sites
     se_ha_mode                      = var.se_ha_mode
+    se_service_account              = var.se_service_account
   }
   controller_sizes = {
     small  = "custom-8-24576"
