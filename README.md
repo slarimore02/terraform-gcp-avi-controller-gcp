@@ -158,7 +158,7 @@ This play will configure the Avi Cloud, Network, IPAM/DNS profiles, DNS Virtual 
 
 Example run (appropriate variables should be used):
 ```bash
-~$ ansible-playbook avi-controller-gcp-all-in-one-play.yml -e password=${var.controller_password} > ansible-playbook-run.log
+~$ ansible-playbook avi-controller-gcp-all-in-one-play.yml -e password='${var.controller_password}' > ansible-playbook-run.log
 ```
 
 ### avi-cleanup.yml
@@ -166,7 +166,7 @@ This play will disable all Virtual Services and delete all existing Avi service 
 
 Example run (appropriate variables should be used):
 ```bash
-~$ ansible-playbook avi-cleanup.yml -e password=${var.controller_password}
+~$ ansible-playbook avi-cleanup.yml -e password='${var.controller_password}'
 ```
 <!-- BEGINNING OF PRE-COMMIT-TERRAFORM DOCS HOOK -->
 ## Requirements
