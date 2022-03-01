@@ -40,6 +40,12 @@ resource "google_project_iam_member" "avi_cluster_vip_role" {
   role    = google_project_iam_custom_role.cluster_vip[0].id
   member  = "serviceAccount:${data.google_service_account.avi.email}"
 }
+resource "google_project_iam_member" "avi_se_service_account_role" {
+  count   = var.create_iam ? var.se_service_account != "" ? 1 : 0 : 0
+  project = var.service_engine_project != "" ? var.service_engine_project : var.project
+  role    = "roles/iam.serviceAccountUser"
+  member  = "serviceAccount:${data.google_service_account.avi.email}"
+}
 resource "google_project_iam_custom_role" "network" {
   count       = var.create_iam ? 1 : 0
   role_id     = "${var.name_prefix}_Avi_Network_Role"
