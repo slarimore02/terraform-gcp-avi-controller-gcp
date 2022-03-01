@@ -12,6 +12,7 @@ locals {
     email_config                    = var.email_config
     region                          = var.region
     se_project_id                   = var.service_engine_project != "" ? var.service_engine_project : var.project
+    gcs_project_id                  = var.storage_project != "" ? var.storage_project : var.project
     se_name_prefix                  = var.name_prefix
     se_cpu                          = var.se_size[0]
     se_memory                       = var.se_size[1]

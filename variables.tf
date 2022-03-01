@@ -199,7 +199,7 @@ variable "service_engine_project" {
   default     = ""
 }
 variable "storage_project" {
-  description = "The storage project used for the Avi Controller Image. If not set the project variable will be used"
+  description = "The storage project used for the Avi Controller and SE Image. If not set the project variable will be used"
   type        = string
   default     = ""
 }

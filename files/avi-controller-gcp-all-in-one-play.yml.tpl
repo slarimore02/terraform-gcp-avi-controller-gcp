@@ -26,6 +26,7 @@
     vpc_project_id: ${vpc_project_id}
     region: ${region}
     se_project_id: ${se_project_id}
+    gcs_project_id: ${gcs_project_id}
     se_name_prefix: ${se_name_prefix}
     se_cpu: ${se_cpu}
     se_memory: ${se_memory}
@@ -114,6 +115,7 @@
         gcp_configuration:
           region_name: "{{ region }}"
           se_project_id: "{{ se_project_id }}"
+          gcs_project_id: "{{ gcs_project_id }}"
           zones: %{ for zone in zones }
             - "${zone}"
             %{ endfor }

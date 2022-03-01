@@ -269,7 +269,7 @@ No modules.
 | <a name="input_server_project"></a> [server\_project](#input\_server\_project) | The backend server GCP Project. If not set the project variable will be used | `string` | `""` | no |
 | <a name="input_service_account_email"></a> [service\_account\_email](#input\_service\_account\_email) | This is the service account that will be leveraged by the Avi Controller. If the create-iam variable is true then this module will create the necessary custom roles and bindings for the SA | `string` | n/a | yes |
 | <a name="input_service_engine_project"></a> [service\_engine\_project](#input\_service\_engine\_project) | The project used for Avi Service Engines. If not set the project variable will be used | `string` | `""` | no |
-| <a name="input_storage_project"></a> [storage\_project](#input\_storage\_project) | The storage project used for the Avi Controller Image. If not set the project variable will be used | `string` | `""` | no |
+| <a name="input_storage_project"></a> [storage\_project](#input\_storage\_project) | The storage project used for the Avi Controller and SE Image. If not set the project variable will be used | `string` | `""` | no |
 | <a name="input_vip_allocation_strategy"></a> [vip\_allocation\_strategy](#input\_vip\_allocation\_strategy) | The VIP allocation strategy for the GCP Cloud - ROUTES or ILB | `string` | `"ROUTES"` | no |
 
 ## Outputs
