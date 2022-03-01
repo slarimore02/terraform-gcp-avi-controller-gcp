@@ -188,7 +188,8 @@ resource "google_project_iam_custom_role" "storage" {
     "storage.buckets.delete",
     "storage.objects.create",
     "storage.objects.delete",
-    "storage.objects.list"
+    "storage.objects.list",
+    "storage.objects.get"
   ]
 }
 resource "google_project_iam_custom_role" "server" {
