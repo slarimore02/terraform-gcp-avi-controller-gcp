@@ -41,13 +41,13 @@ jobs:
     strategy:
       matrix:
         include:
-          - avi_version: 20.1.6
+          - avi_version: 20.1.7
             controller_ha: false
-          - avi_version: 21.1.1
+          - avi_version: 21.1.3
             controller_ha: false
-          - avi_version: 20.1.6
+          - avi_version: 20.1.7
             controller_ha: true
-          - avi_version: 21.1.1
+          - avi_version: 21.1.3
             controller_ha: true
       fail-fast: false
         
