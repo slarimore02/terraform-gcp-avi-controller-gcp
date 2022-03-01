@@ -105,7 +105,8 @@ resource "google_project_iam_custom_role" "serviceengine" {
     "compute.targetPools.removeInstance",
     "compute.targetPools.use",
     "compute.zoneOperations.get",
-    "compute.zones.list"
+    "compute.zones.list",
+    "compute.instances.setServiceAccount"
   ]
 }
 resource "google_project_iam_custom_role" "autoscaling_se" {
