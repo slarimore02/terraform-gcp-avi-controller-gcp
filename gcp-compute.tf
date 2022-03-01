@@ -75,7 +75,7 @@ resource "google_compute_instance" "avi_controller" {
     scopes = ["cloud-platform"]
   }
   provisioner "local-exec" {
-    command = var.controller_public_address ? "bash ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].access_config[0].nat_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\"" : "bash ${path.module}/files/change-controller-password.sh --controller-address \"${self.network_interface[0].network_ip}\" --current-password \"${var.controller_default_password}\" --new-password \"${var.controller_password}\""
+    command = var.controller_public_address ? "bash ${path.module}/files/change-controller-password.sh --controller-address '${self.network_interface[0].access_config[0].nat_ip}' --current-password '${var.controller_default_password}' --new-password '${var.controller_password}'" : "bash ${path.module}/files/change-controller-password.sh --controller-address '${self.network_interface[0].network_ip}' --current-password '${var.controller_default_password}' --new-password '${var.controller_password}'"
   }
   depends_on = [google_compute_image.controller]
 }
@@ -103,7 +103,7 @@ resource "null_resource" "ansible_provisioner" {
   }
   provisioner "remote-exec" {
     inline = [
-      "ansible-playbook avi-controller-gcp-all-in-one-play.yml -e password=${var.controller_password} > ansible-playbook.log 2> ansible-error.log",
+      "ansible-playbook avi-controller-gcp-all-in-one-play.yml -e password='${var.controller_password}' > ansible-playbook.log 2> ansible-error.log",
       "echo Controller Configuration Completed"
     ]
   }
