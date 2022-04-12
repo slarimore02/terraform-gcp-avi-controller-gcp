@@ -61,7 +61,7 @@
     dns_vs_settings: 
       ${ indent(6, yamlencode(dns_vs_settings))}
 %{ endif ~}
-%{ if configure_gslb ~}
+%{ if configure_gslb && gslb_site_name != "" ~}
     gslb_site_name: ${gslb_site_name}
     additional_gslb_sites:
       ${ indent(6, yamlencode(additional_gslb_sites))}
@@ -297,7 +297,7 @@
           add:
             dns_provider_ref: "{{ create_dns.obj.url }}"
 %{ endif }
-%{ if configure_gslb }
+%{ if configure_gslb && create_gslb_se_group }
     - name: Configure GSLB SE-Group
       avi_api_session:
         avi_credentials: "{{ avi_credentials }}"
@@ -333,7 +333,7 @@
         data:
           east_west_placement: false
           cloud_ref: "{{ avi_cloud.obj.url }}"
-%{ if configure_gslb ~}
+%{ if configure_gslb && create_gslb_se_group ~}
           se_group_ref: "{{ gslb_se_group.obj.url }}"
 %{ endif ~}
           vip:
@@ -391,7 +391,7 @@
           application_profile_ref: /api/applicationprofile?name=System-DNS
           network_profile_ref: /api/networkprofile?name=System-UDP-Per-Pkt
           analytics_profile_ref: /api/analyticsprofile?name=System-Analytics-Profile
-          %{ if configure_gslb }
+          %{ if configure_gslb && create_gslb_se_group }
           se_group_ref: "{{ gslb_se_group.obj.url }}"
           %{ endif}
           cloud_ref: "{{ avi_cloud.obj.url }}"
@@ -412,7 +412,7 @@
         tenant: admin
         dns_virtualservice_refs: "{{ dns_vs.obj.url }}"
 %{ endif}
-%{ if configure_gslb }
+%{ if configure_gslb && gslb_site_name != "" }
     - name: GSLB Config | Verify Cluster UUID
       avi_api_session:
         avi_credentials: "{{ avi_credentials }}"

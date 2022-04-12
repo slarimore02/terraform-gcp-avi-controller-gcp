@@ -79,6 +79,11 @@ variable "additional_gslb_sites" {
   type        = list(object({ name = string, ip_address = string, dns_vs_name = string }))
   default     = [{ name = "", ip_address = "", dns_vs_name = "" }]
 }
+variable "create_gslb_se_group" {
+  description = "Create a SE group for GSLB. This option only applies when configure_gslb is set to true"
+  type        = bool
+  default     = "true"
+}
 variable "name_prefix" {
   description = "This prefix is appended to the names of the Controller and SEs"
   type        = string
