@@ -100,6 +100,7 @@ resource "google_project_iam_custom_role" "serviceengine" {
     "compute.instances.setTags",
     "compute.instances.use",
     "compute.machineTypes.get",
+    "compute.machineTypes.list",
     "compute.regionOperations.get",
     "compute.regions.get",
     "compute.regions.list",
