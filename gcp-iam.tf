@@ -60,6 +60,7 @@ resource "google_project_iam_custom_role" "network" {
     "compute.regions.get",
     "compute.routes.create",
     "compute.routes.delete",
+    "compute.routes.get",
     "compute.routes.list",
     "compute.subnetworks.get",
     "compute.subnetworks.list",
