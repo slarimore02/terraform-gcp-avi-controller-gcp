@@ -1,6 +1,6 @@
 # AVI Controller Deployment on GCP Terraform module
 
-## Note: This repository has been archived and new versions are now available at https://github.com/vmware/terraform-google-avi-alb-deployment-gcp. Please use the new repository going forward.
+## Note: This repository has been archived and new versions are now available on the Terraform registry at https://registry.terraform.io/modules/vmware/avi-alb-deployment-gcp/google/latest or Github at https://github.com/vmware/terraform-google-avi-alb-deployment-gcp. Please use the new repository going forward.
 
 This Terraform module creates and configures an AVI (NSX Advanced Load-Balancer) Controller on GCP
 
